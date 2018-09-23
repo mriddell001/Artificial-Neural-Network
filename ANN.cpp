@@ -156,25 +156,27 @@ void ANN::auto_refine(istream &instream, ostream &outstream) {
       tests.pop();
     }
     else {
-      //Pop
-      tests.pop();
-      //Open file.
-      std::ifstream test_stream (test.second, std::ifstream::in);
-      //Prime input.
-      bool primed = prime_input(test_stream);
+      tests.pop(); //Remove top record.
+      std::ifstream test_stream (test.second, std::ifstream::in); //Open file.
+      bool primed = prime_input(test_stream); //Prime input.
       if(primed) {
         //Run test.
         bool tested = run_test();
+        if (tested) {
+          //Measure distance.
+          double e_dist = elucidian_distance(test_stream);
+          if (e_dist > error_target) {
+            //Backtracking.
+            //Update Error
+            //Push
+          }
+        }
       }
       else {
         while(tests.size()) {tests.pop();}
         error_loc = "Priming";
         emergency_exit(error_loc);
       }
-      //Measure distance.
-      //Backtracking.
-      //Measure distance.
-      //Push
     }
 
   }
@@ -198,40 +200,6 @@ bool ANN::prime_input(istream &stream) {
   }
   return true;
 }
-
-/*
-void Node::Calculate_layers() {
-    // Calculate activation function.
-    for (int i = 0; i < data_vector.size(); i++) {
-        DataNode *tmp = data_vector[i];
-        double weight = (*tmp).node_weight;
-        weight = 1.0 / (1.0 + pow(e, (-weight)));
-        (*tmp).node_weight = weight;
-
-        // Preform activation across hidden layers.
-        if (i < (*hidden_layers.end())) {
-            for (int j = 0; j < (*tmp).edge_weight.size(); j++) {
-                DataNode *hidden_node = (*tmp).input_edges[j];
-                (*hidden_node).node_weight = (*hidden_node).node_weight + (*tmp).node_weight * (*tmp).edge_weight[j];
-            }
-        }
-        // Preform activation to output layer.
-        else {
-            for (int j = 0; j < (*tmp).edge_weight.size(); j ++) {
-                OutputNode *output_node = (*tmp).output_edges[j];
-                (*output_node).node_weight = (*output_node).node_weight + (*tmp).node_weight * (*tmp).edge_weight[j];
-            }
-        }
-    }
-
-    for (int i = 0; i < output_vector.size(); i++) {
-        OutputNode *tmp = output_vector[i];
-        double weight = (*tmp).node_weight;
-        weight = 1.0 / (1.0 + pow(e, (-weight)));
-        (*tmp).node_weight = weight;
-    }
-}*/
-
 
 bool ANN::run_test() {
   bool passed = input_to_hidden();
@@ -290,6 +258,22 @@ bool ANN::hidden_to_output() {
     ann_o[i].m_weight = sigmoid;
   }
   return true;
+}
+
+double ANN::elucidian_distance(istream &stream) {
+  double sum, tmp;
+  vector<double> diffs;
+  for (vector<Node*>::iterator it = ann_o.begin() ; it != ann_o.end(); ++it) {
+    stream >> tmp;
+    double diff = tmp - (*it)->m_weight;
+    diffs.push_back(diff*diff);
+  }
+
+  for (int i = 0; i < diffs.size(); i++) {
+    sum += diffs;
+  }
+  double error = sqrt(sum);
+  return error;
 }
 
 void ANN::emergency_exit(string error_message) {
