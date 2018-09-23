@@ -236,8 +236,17 @@ void Node::Calculate_layers() {
 bool ANN::run_test() {
   bool passed = input_to_hidden();
   if (passed) {
-
+    passed = hidden_to_hidden();
+    if (passed) {
+      passed = hidden_to_output();
+      if (passed) {
+        return true;
+      }
+      emergency_exit("Hidden to Output");
+    }
+    emergency_exit("Hidden to Hidden");
   }
+  emergency_exit("Input to Hidden");
 }
 
 bool ANN::input_to_hidden() {
@@ -253,7 +262,35 @@ bool ANN::input_to_hidden() {
   return true;
 }
 
+bool ANN::hidden_to_hidden() {
+  int l = m_hidden_layers, s = m_hidden_size;
+  for (int i = 1; i < l; i++) {
+    for (int j = 0; j < s; j++) {
+      double sums;
+      for (int k = 0; k < s; k++) {
+        sums += ann_h[(i-1)*s + k].m_edgeWeight[j] * ann_h[(i-1)*s + k].m_weight;
+      }
+      sums += ann_h[i*s + j].m_weight;
+      double sigmoid = 1.0 / (1.0 + pow(e, (-sums)));
+      ann_h[i*s + j].m_weight = sigmoid;
+    }
+  }
+  return true;
+}
 
+bool ANN::hidden_to_output() {
+  int l = m_hidden_layers, s = m_hidden_size, o = m_output_size;
+  for (int i = 0; i < o; i++) {
+    double sums;
+    for (int j = 0; j < s; j++) {
+      sums += ann_h[(l-1)*s+j].m_edgeWeight[i] * ann_h[(l-1)*s+j].m_weight;
+    }
+    sums += ann_o[i].m_weight;
+    double sigmoid = 1.0 / (1.0 + pow(e, (-sums)));
+    ann_o[i].m_weight = sigmoid;
+  }
+  return true;
+}
 
 void ANN::emergency_exit(string error_message) {
   ~ANN();

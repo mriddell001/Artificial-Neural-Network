@@ -28,6 +28,7 @@ public:
 private:
   bool init();
   bool prime_input(std::istream &stream);
+  double elucidian_distance();
 
   bool run_test();
   bool input_to_hidden();
