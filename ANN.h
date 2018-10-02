@@ -17,6 +17,7 @@ Functions:
 
 #include "Node.h"
 #include <iostream>
+#include <memory>
 #include <string>
 
 class ANN {
@@ -44,12 +45,12 @@ private:
   void hidden_layer_creation(int b, int d);
   void output_layer_creation(int b, int c, int d);
 
-  void emergency_exit(string error_message);
+  void emergency_exit(std::string error_message);
   void save_state(std::ostream &outstream);
 
-  std::vector<Node*> ann_i;   //Vector of input nodes.
-  std::vector<Node*> ann_h;   //Vector of hidden nodes.
-  std::vector<Node*> ann_o;   //Vector of output nodes.
+  std::vector<std::shared_ptr<Node> > ann_i;   //Vector of input nodes.
+  std::vector<std::shared_ptr<Node> > ann_h;   //Vector of hidden nodes.
+  std::vector<std::shared_ptr<Node> > ann_o;   //Vector of output nodes.
   int m_input_size;
   int m_hidden_layers;
   int m_hidden_size;

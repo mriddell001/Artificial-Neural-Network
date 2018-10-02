@@ -11,11 +11,9 @@ Functions:
 */
 #include "ANN.h"
 #include "Node.h"
-#include <bits/stdc++.h>
 #include <memory>
+#include <utility>
 #include <vector>
-
-using namespace std;
 
 /**
  * ANN - This function serves as the constructor for the ANN object. It sets the
@@ -35,7 +33,10 @@ ANN::ANN(int in[4]) {
 
   bool init_success = init();
   if(!init_success) {
-    cout << "There has been a problem with the init function.\n";
+    std::cout << "There has been a problem with the init function.\n";
+  }
+  else {
+    std::cout << "There has been no problems with the init function.\n";
   }
 }
 
@@ -51,16 +52,13 @@ ANN::ANN(int in[4]) {
 ANN::~ANN() {
   while (ann_i.capacity()) {
     ann_i.resize(0);
-    ann_i.shrink_to_fit();
-  }
+    ann_i.shrink_to_fit();}
   while (ann_h.capacity()) {
     ann_h.resize(0);
-    ann_h.shrink_to_fit();
-  }
+    ann_h.shrink_to_fit();}
   while (ann_o.capacity()) {
     ann_o.resize(0);
-    ann_o.shrink_to_fit();
-  }
+    ann_o.shrink_to_fit();}
 }
 
 /*
@@ -77,7 +75,6 @@ ANN::~ANN() {
  * Testing status: Untested.
  */
 bool ANN::init() {
-  //Node *tmp, *pmt;
   int a = m_input_size, b = m_hidden_size,
       c = m_output_size, d = m_hidden_layers;
 
@@ -90,8 +87,8 @@ bool ANN::init() {
 void ANN::input_layer_creation(int a) {
   ///For each node in the input layer.
   for (int i = 0; i < a; i++) {
-    shared_ptr<Node> tmp = make_shared<Node>();
-    ann_i.push_back(tmp);
+    std::shared_ptr<Node> tmp = std::make_shared<Node>();
+    ann_i.push_back(std::move(tmp));
   }
 }
 
@@ -100,24 +97,24 @@ void ANN::hidden_layer_creation(int b, int d) {
   for (int i = 0; i < d; i++) {
     ///For each node in a hidden layer.
     for (int j = 0; j < b; j++) {
-      tmp = new Node();
-      ann_h.push_back(tmp);
+      std::shared_ptr<Node> tmp = std::make_shared<Node>();
+      ann_h.push_back(std::move(tmp));
       if (i) {
         int l = (i - 1) * b;
         ///For each node in a hidden layer, add the newly created node to the
         ///vector of edges of the previous layer.
         for (int k = 0; k < b; k++) {
-          pmt = ann_h[l+k];
-          (*pmt).m_edges.push_back(tmp);
-          (*pmt).m_edgeWeight.push_back(0.5);
+          std::shared_ptr<Node> pmt (ann_h[l+k]);
+          pmt->m_edges.push_back(tmp);
+          pmt->m_edgeWeight.push_back(0.5);
         }
       }
       else {
         ///For each node in the input layer, add the newly created node to the
         ///vector of edges.
-        for (vector<Node*>::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
-          (*it)->m_edges.push_back(tmp);
-          (*it)->m_edgeWeight.push_back(0.5);
+        for (std::vector<std::shared_ptr<Node> >::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
+          it->m_edges.push_back(std::move(tmp));
+          it->m_edgeWeight.push_back(0.5);
         }
       }
     }
@@ -128,12 +125,12 @@ void ANN::output_layer_creation(int b, int c, int d) {
   int l = (d*b)-b;
   ///For each node in the output layer.
   for (int i = 0; i < c; i++) {
-    tmp = new Node();
-    ann_o.push_back(tmp);
+    std::shared_ptr<Node> tmp = std::make_shared<Node>();
+    ann_o.push_back(std::move(tmp));
     ///For each node in the last hidden layer.
     for (int j = 0; j < b; j++) {
-      pmt = ann_h[l+j];
-      (*pmt).m_edges.push_back(tmp);
+      std::shared_ptr<Node> pmt (ann_h[l+j]);
+      (*pmt).m_edges.push_back(std::move(tmp));
       (*pmt).m_edgeWeight.push_back(0.5);
     }
   }
@@ -150,15 +147,15 @@ void ANN::output_layer_creation(int b, int c, int d) {
  * Testing status: Untested.
  */
 void ANN::auto_refine(istream &instream, ostream &outstream) {
-  priority_queue<pair<double, string> > tests;
-  string t, error_loc;
+  priority_queue<std::pair<double, std::string> > tests;
+  std::string t, error_loc;
   double error_target;
   stream >> error_target;
   while(stream >> t) {
-    tests.push(make_pair(1.0,t));
+    tests.push(std::make_pair(1.0,t));
   }
   while(tests.size()) {
-    pair<double, string> test = tests.top();
+    std::pair<double, std::string> test = tests.top();
     if (test.first <= error_target) {
       tests.pop();
     }
@@ -202,7 +199,7 @@ void ANN::auto_refine(istream &instream, ostream &outstream) {
  */
 bool ANN::prime_input(istream &stream) {
   double tmp;
-  for (vector<Node*>::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
+  for (std::vector<Node*>::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
     stream >> tmp;
     (*it)->m_weight = tmp;
   }
@@ -270,8 +267,8 @@ bool ANN::hidden_to_output() {
 
 double ANN::elucidian_distance(istream &stream) {
   double sum, tmp;
-  vector<double> diffs;
-  for (vector<Node*>::iterator it = ann_o.begin() ; it != ann_o.end(); ++it) {
+  std::vector<double> diffs;
+  for (std::vector<Node*>::iterator it = ann_o.begin() ; it != ann_o.end(); ++it) {
     stream >> tmp;
     double diff = tmp - (*it)->m_weight;
     diffs.push_back(diff*diff);
@@ -347,8 +344,8 @@ bool ANN::back_hidden_to_input(double err) {
   return true;
 }
 
-void ANN::emergency_exit(string error_message) {
+void ANN::emergency_exit(std::string error_message) {
   ~ANN();
-  cout << "Error located in: " << error_message << endl;
+  std::cout << "Error located in: " << error_message << endl;
   exit (1);
 }
