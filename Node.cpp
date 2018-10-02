@@ -9,10 +9,6 @@ using namespace std;
  *         confirms data is released and sets vectors to a null pointer.
  */
 Node::~Node() {
-  while (m_edges.capacity()) {
-    m_edges.resize(0);
-    m_edges.shrink_to_fit();
-  }
   while (m_edgeWeight.capacity()) {
     m_edgeWeight.resize(0);
     m_edgeWeight.shrink_to_fit();

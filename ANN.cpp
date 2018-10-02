@@ -25,7 +25,7 @@ Functions:
  *
  * Testing status: Untested.
  */
-ANN::ANN(int in[4]) {
+ANN::ANN(int in[]) {
   m_input_size = in[0];
   m_hidden_layers = in[1];
   m_hidden_size = in[2];
@@ -86,35 +86,38 @@ bool ANN::init() {
 
 void ANN::input_layer_creation(int a) {
   ///For each node in the input layer.
+  std::cout << "Input Layer Creation" << std::endl;
   for (int i = 0; i < a; i++) {
-    std::shared_ptr<Node> tmp = std::make_shared<Node>();
+    std::shared_ptr<Node*> tmp = std::make_shared<Node*>();
     ann_i.push_back(std::move(tmp));
   }
 }
 
+//Error in hidden_layer_creation!!
 void ANN::hidden_layer_creation(int b, int d) {
   //For each hidden layers.
+  std::cout << "Hidden Layer Creation" << std::endl;
   for (int i = 0; i < d; i++) {
     ///For each node in a hidden layer.
     for (int j = 0; j < b; j++) {
-      std::shared_ptr<Node> tmp = std::make_shared<Node>();
+      std::shared_ptr<Node*> tmp = std::make_shared<Node*>();
       ann_h.push_back(std::move(tmp));
       if (i) {
         int l = (i - 1) * b;
         ///For each node in a hidden layer, add the newly created node to the
         ///vector of edges of the previous layer.
         for (int k = 0; k < b; k++) {
-          std::shared_ptr<Node> pmt (ann_h[l+k]);
-          pmt->m_edges.push_back(tmp);
-          pmt->m_edgeWeight.push_back(0.5);
+          std::shared_ptr<Node*> pmt (ann_h[l+k]);
+          (*pmt)->m_edges.push_back(std::move(tmp));
+          (*pmt)->m_edgeWeight.push_back(0.5);
         }
       }
       else {
         ///For each node in the input layer, add the newly created node to the
         ///vector of edges.
-        for (std::vector<std::shared_ptr<Node> >::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
-          it->m_edges.push_back(std::move(tmp));
-          it->m_edgeWeight.push_back(0.5);
+        for (std::vector<std::shared_ptr<Node*> >::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
+          (**it)->m_edges.push_back(std::move(tmp));
+          (**it)->m_edgeWeight.push_back(0.5);
         }
       }
     }
@@ -122,16 +125,17 @@ void ANN::hidden_layer_creation(int b, int d) {
 }
 
 void ANN::output_layer_creation(int b, int c, int d) {
+  std::cout << "Output Layer Creation" << std::endl;
   int l = (d*b)-b;
   ///For each node in the output layer.
   for (int i = 0; i < c; i++) {
-    std::shared_ptr<Node> tmp = std::make_shared<Node>();
+    std::shared_ptr<Node*> tmp = std::make_shared<Node*>();
     ann_o.push_back(std::move(tmp));
     ///For each node in the last hidden layer.
     for (int j = 0; j < b; j++) {
-      std::shared_ptr<Node> pmt (ann_h[l+j]);
-      (*pmt).m_edges.push_back(std::move(tmp));
-      (*pmt).m_edgeWeight.push_back(0.5);
+      std::shared_ptr<Node*> pmt (ann_h[l+j]);
+      (*pmt)->m_edges.push_back(std::move(tmp));
+      (*pmt)->m_edgeWeight.push_back(0.5);
     }
   }
 }
@@ -146,12 +150,13 @@ void ANN::output_layer_creation(int b, int c, int d) {
  *
  * Testing status: Untested.
  */
-void ANN::auto_refine(istream &instream, ostream &outstream) {
+void ANN::auto_refine(std::istream &instream, std::ostream &outstream) {
+  /*
   priority_queue<std::pair<double, std::string> > tests;
   std::string t, error_loc;
   double error_target;
-  stream >> error_target;
-  while(stream >> t) {
+  instream >> error_target;
+  while(instream >> t) {
     tests.push(std::make_pair(1.0,t));
   }
   while(tests.size()) {
@@ -185,7 +190,7 @@ void ANN::auto_refine(istream &instream, ostream &outstream) {
     }
 
   }
-
+  */
 }
 
 /**
@@ -197,16 +202,20 @@ void ANN::auto_refine(istream &instream, ostream &outstream) {
  *
  * Testing status: Untested.
  */
-bool ANN::prime_input(istream &stream) {
+bool ANN::prime_input(std::istream &stream) {
+  /*
   double tmp;
   for (std::vector<Node*>::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
     stream >> tmp;
     (*it)->m_weight = tmp;
   }
   return true;
+  */
+  return true;
 }
 
 bool ANN::run_test() {
+  /*
   bool passed = input_to_hidden();
   if (passed) {
     passed = hidden_to_hidden();
@@ -220,9 +229,12 @@ bool ANN::run_test() {
     emergency_exit("Hidden to Hidden");
   }
   emergency_exit("Input to Hidden");
+  */
+  return true;
 }
 
 bool ANN::input_to_hidden() {
+  /*
   for (int i = 0; i < m_hidden_size; i++) {
     double sums;
     for (int j = 0; j < ann_i.size(); j++) {
@@ -232,10 +244,12 @@ bool ANN::input_to_hidden() {
     double sigmoid = 1.0 / (1.0 + pow(e, (-sums)));
     ann_h[i].m_weight = sigmoid;
   }
+  */
   return true;
 }
 
 bool ANN::hidden_to_hidden() {
+  /*
   int l = m_hidden_layers, s = m_hidden_size;
   for (int i = 1; i < l; i++) {
     for (int j = 0; j < s; j++) {
@@ -248,10 +262,12 @@ bool ANN::hidden_to_hidden() {
       ann_h[i*s + j].m_weight = sigmoid;
     }
   }
+  */
   return true;
 }
 
 bool ANN::hidden_to_output() {
+  /*
   int l = m_hidden_layers, s = m_hidden_size, o = m_output_size;
   for (int i = 0; i < o; i++) {
     double sums;
@@ -262,10 +278,12 @@ bool ANN::hidden_to_output() {
     double sigmoid = 1.0 / (1.0 + pow(e, (-sums)));
     ann_o[i].m_weight = sigmoid;
   }
+  */
   return true;
 }
 
-double ANN::elucidian_distance(istream &stream) {
+double ANN::elucidian_distance(std::istream &stream) {
+  /*
   double sum, tmp;
   std::vector<double> diffs;
   for (std::vector<Node*>::iterator it = ann_o.begin() ; it != ann_o.end(); ++it) {
@@ -279,54 +297,10 @@ double ANN::elucidian_distance(istream &stream) {
   }
   double error = sqrt(sum);
   return error;
+  */
+  return 0.0;
 }
 
-/*
-void Node::Propagate_error() {
-    double alpha = 0.005;
-
-    for (int i = 0; i < input_vector.size(); i++) {
-        InputNode *tmp = input_vector[i];
-        double in_err = (*tmp).input_error;
-        double dummy = (*tmp).node_weight;
-        double actual = (*tmp).actual_value;
-
-        (*tmp).node_weight = dummy;
-
-
-        for (int j = 0; j < (*tmp).edge_weight.size(); j++) {
-            DataNode *data = (*tmp).input_edges[j];
-            double edge_prop = (*tmp).edge_weight[j];
-            double da_err = (*data).delta_error;
-
-            (*tmp).edge_weight[j] = edge_prop + alpha * actual * da_err;
-        }
-    }
-
-    for (int i = 0; i < data_vector.size(); i++) {
-        DataNode *tmp = data_vector[i];
-        double hi_err = (*tmp).delta_error;
-        double weight = (*tmp).node_weight;
-
-        weight = weight + alpha * weight * hi_err;
-        (*tmp).node_weight = weight;
-        if (i < (*hidden_layers.end())) {
-            for (int j = 0; j < (*tmp).edge_weight.size(); j++) {
-                DataNode *data = (*tmp).input_edges[j];
-                double edge_prop = (*tmp).edge_weight[j];
-                double da_err = (*data).delta_error;
-                (*tmp).edge_weight[j] = edge_prop + alpha * weight * hi_err;
-            }
-        }
-        else {
-            for (int j = 0; j < (*tmp).edge_weight.size(); j++) {
-                OutputNode *out = (*tmp).output_edges[j];
-                double edge_prop = (*tmp).edge_weight[j];
-            }
-        }
-    }
-}
-*/
 bool ANN::backpropagation(double err) {
 
   return true;
@@ -345,7 +319,7 @@ bool ANN::back_hidden_to_input(double err) {
 }
 
 void ANN::emergency_exit(std::string error_message) {
-  ~ANN();
-  std::cout << "Error located in: " << error_message << endl;
+  //~ANN();
+  std::cout << "Error located in: " << error_message << std::endl;
   exit (1);
 }
