@@ -35,6 +35,11 @@ private:
   bool hidden_to_hidden();
   bool hidden_to_output();
 
+  bool backpropagation(double err);
+  bool back_output_to_hidden(double err);
+  bool back_hidden_to_hidden(double err);
+  bool back_hidden_to_input(double err);
+
   void input_layer_creation(int a);
   void hidden_layer_creation(int b, int d);
   void output_layer_creation(int b, int c, int d);

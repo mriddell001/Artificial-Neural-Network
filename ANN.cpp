@@ -12,6 +12,7 @@ Functions:
 #include "ANN.h"
 #include "Node.h"
 #include <bits/stdc++.h>
+#include <memory>
 #include <vector>
 
 using namespace std;
@@ -48,12 +49,18 @@ ANN::ANN(int in[4]) {
  * Testing status: Untested.
  */
 ANN::~ANN() {
-  for (auto it = ann_i.begin(); it != ann_i.end(); ++it)
-    delete *it;
-  for (auto it = ann_h.begin(); it != ann_h.end(); ++it)
-    delete *it;
-  for (auto it = ann_o.begin(); it != ann_o.end(); ++it)
-    delete *it;
+  while (ann_i.capacity()) {
+    ann_i.resize(0);
+    ann_i.shrink_to_fit();
+  }
+  while (ann_h.capacity()) {
+    ann_h.resize(0);
+    ann_h.shrink_to_fit();
+  }
+  while (ann_o.capacity()) {
+    ann_o.resize(0);
+    ann_o.shrink_to_fit();
+  }
 }
 
 /*
@@ -70,7 +77,7 @@ ANN::~ANN() {
  * Testing status: Untested.
  */
 bool ANN::init() {
-  Node *tmp, *pmt;
+  //Node *tmp, *pmt;
   int a = m_input_size, b = m_hidden_size,
       c = m_output_size, d = m_hidden_layers;
 
@@ -83,7 +90,7 @@ bool ANN::init() {
 void ANN::input_layer_creation(int a) {
   ///For each node in the input layer.
   for (int i = 0; i < a; i++) {
-    tmp = new Node();
+    shared_ptr<Node> tmp = make_shared<Node>();
     ann_i.push_back(tmp);
   }
 }
@@ -167,6 +174,7 @@ void ANN::auto_refine(istream &instream, ostream &outstream) {
           double e_dist = elucidian_distance(test_stream);
           if (e_dist > error_target) {
             //Backtracking.
+            bool updated = backtracking(e_dist);
             //Update Error
             //Push
           }
@@ -274,6 +282,69 @@ double ANN::elucidian_distance(istream &stream) {
   }
   double error = sqrt(sum);
   return error;
+}
+
+/*
+void Node::Propagate_error() {
+    double alpha = 0.005;
+
+    for (int i = 0; i < input_vector.size(); i++) {
+        InputNode *tmp = input_vector[i];
+        double in_err = (*tmp).input_error;
+        double dummy = (*tmp).node_weight;
+        double actual = (*tmp).actual_value;
+
+        (*tmp).node_weight = dummy;
+
+
+        for (int j = 0; j < (*tmp).edge_weight.size(); j++) {
+            DataNode *data = (*tmp).input_edges[j];
+            double edge_prop = (*tmp).edge_weight[j];
+            double da_err = (*data).delta_error;
+
+            (*tmp).edge_weight[j] = edge_prop + alpha * actual * da_err;
+        }
+    }
+
+    for (int i = 0; i < data_vector.size(); i++) {
+        DataNode *tmp = data_vector[i];
+        double hi_err = (*tmp).delta_error;
+        double weight = (*tmp).node_weight;
+
+        weight = weight + alpha * weight * hi_err;
+        (*tmp).node_weight = weight;
+        if (i < (*hidden_layers.end())) {
+            for (int j = 0; j < (*tmp).edge_weight.size(); j++) {
+                DataNode *data = (*tmp).input_edges[j];
+                double edge_prop = (*tmp).edge_weight[j];
+                double da_err = (*data).delta_error;
+                (*tmp).edge_weight[j] = edge_prop + alpha * weight * hi_err;
+            }
+        }
+        else {
+            for (int j = 0; j < (*tmp).edge_weight.size(); j++) {
+                OutputNode *out = (*tmp).output_edges[j];
+                double edge_prop = (*tmp).edge_weight[j];
+            }
+        }
+    }
+}
+*/
+bool ANN::backpropagation(double err) {
+
+  return true;
+}
+
+bool ANN::back_output_to_hidden(double err) {
+  return true;
+}
+
+bool ANN::back_hidden_to_hidden(double err) {
+  return true;
+}
+
+bool ANN::back_hidden_to_input(double err) {
+  return true;
 }
 
 void ANN::emergency_exit(string error_message) {
