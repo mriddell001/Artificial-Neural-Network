@@ -17,7 +17,6 @@ Functions:
 
 #include "Node.h"
 #include <iostream>
-#include <memory>
 #include <string>
 
 class ANN {
