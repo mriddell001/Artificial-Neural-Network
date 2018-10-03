@@ -31,13 +31,7 @@ ANN::ANN(int in[]) {
   m_hidden_size = in[2];
   m_output_size = in[3];
 
-  bool init_success = init();
-  if(!init_success) {
-    std::cout << "There has been a problem with the init function.\n";
-  }
-  else {
-    std::cout << "There has been no problems with the init function.\n";
-  }
+  std::cout << ((init()) ? "init() exited with no errors" : "init() failed to execute!") << std::endl;
 }
 
 /**
@@ -50,13 +44,13 @@ ANN::ANN(int in[]) {
  * Testing status: Untested.
  */
 ANN::~ANN() {
-  while (ann_i.capacity()) {
+  for (int i : ann_i.capacity()) {
     ann_i.resize(0);
     ann_i.shrink_to_fit();}
-  while (ann_h.capacity()) {
-    ann_h.resize(0);
-    ann_h.shrink_to_fit();}
-  while (ann_o.capacity()) {
+  for (int i : ann_h.capacity()) { //while loops dont work like that, they need an expression
+    ann_h.resize(0);			   //that is contextually convertable into a bool, what you need
+    ann_h.shrink_to_fit();}		   //is a ranged for loop written like this: for(declaration : range)
+  for (int i : ann_o.capacity()) {
     ann_o.resize(0);
     ann_o.shrink_to_fit();}
 }
@@ -75,12 +69,10 @@ ANN::~ANN() {
  * Testing status: Untested.
  */
 bool ANN::init() {
-  int a = m_input_size, b = m_hidden_size,
-      c = m_output_size, d = m_hidden_layers;
 
-  input_layer_creation(a);
-  hidden_layer_creation(b,d);
-  output_layer_creation(b,c,d);
+  input_layer_creation(m_input_size);
+  hidden_layer_creation(m_hidden_size, m_hidden_layers); //why the buffer step of setting them to local variables a, b, c and d?
+  output_layer_creation(m_hidden_size, m_output_size, m_hidden_layers);
   return true;
 }
 

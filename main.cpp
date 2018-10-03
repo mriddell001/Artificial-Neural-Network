@@ -1,6 +1,4 @@
 #include "ANN.h"
-#include <iostream>
-#include <memory>
 
 int main(int argc, char const *argv[]) {
   int test_array[4] = {2, 1, 1, 1};
@@ -8,10 +6,11 @@ int main(int argc, char const *argv[]) {
     std::cout << test_array[i] << " ";
   }
   std::cout << std::endl;
-  ANN *ann = new ANN(test_array);
+
+  std::unique_ptr<ANN> ann = std::make_unique<ANN>(test_array);
+
   if (ann) {
     std::cout << "Test" << std::endl;
   }
-  delete ann;
-  return 0;
+    return 0;
 }
