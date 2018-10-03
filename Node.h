@@ -3,6 +3,7 @@
 #define NODE_H
 
 #include <vector>
+#include <memory>
 
 class Node {
 public:
