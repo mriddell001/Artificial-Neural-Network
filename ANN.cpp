@@ -44,13 +44,13 @@ ANN::ANN(int in[]) {
  * Testing status: Untested.
  */
 ANN::~ANN() {
-  for (int i : ann_i.capacity()) {
+  while (ann_i.capacity()) {
     ann_i.resize(0);
     ann_i.shrink_to_fit();}
-  for (int i : ann_h.capacity()) { //while loops dont work like that, they need an expression
-    ann_h.resize(0);			   //that is contextually convertable into a bool, what you need
-    ann_h.shrink_to_fit();}		   //is a ranged for loop written like this: for(declaration : range)
-  for (int i : ann_o.capacity()) {
+  while (ann_h.capacity()) {
+	  ann_h.resize(0);
+    ann_h.shrink_to_fit();}
+  while (ann_o.capacity()) {
     ann_o.resize(0);
     ann_o.shrink_to_fit();}
 }
