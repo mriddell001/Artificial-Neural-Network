@@ -1,6 +1,5 @@
 /*
 Filename: ANN.cpp
-Name: Matthew Riddell-Ide
 Contents: This file contains the main functions of control for the ANN.
 Functions:
   ANN - This constructor is passed four int values as its parameter, the
@@ -11,7 +10,6 @@ Functions:
 */
 #include "ANN.h"
 #include "Node.h"
-#include <memory>
 #include <utility>
 #include <vector>
 
@@ -20,10 +18,17 @@ Functions:
  *    four basic size values: input, hidden, output, hidden layers. It calls the
  *    init() function afterwards and checks that it executed sucessfully.
  *
+ * Parameters:
+ *  INT ARRAY in: This contains the four values for building the ANN.
+ *              0: Size of the input layer.
+ *              1: Size of the hidden layers.
+ *              2: Size of the output layer.
+ *              3: Number of hidden layers.
+ *
  * Assumptions: This function assumes the int array argument contains four valid
  *    integer values to be set.
  *
- * Testing status: Untested.
+ * Testing status: Tested. 10-4-18
  */
 ANN::ANN(int in[]) {
   m_input_size = in[0];
@@ -41,16 +46,16 @@ ANN::ANN(int in[]) {
  *
  * Assumptions: This function assumes the delete function is called successfully
  *
- * Testing status: Untested.
+ * Testing status: Tested. 10-4-18
  */
 ANN::~ANN() {
-  for (int i : ann_i.capacity()) {
+  while(ann_i.capacity()) {
     ann_i.resize(0);
     ann_i.shrink_to_fit();}
-  for (int i : ann_h.capacity()) { //while loops dont work like that, they need an expression
-    ann_h.resize(0);			   //that is contextually convertable into a bool, what you need
-    ann_h.shrink_to_fit();}		   //is a ranged for loop written like this: for(declaration : range)
-  for (int i : ann_o.capacity()) {
+  while(ann_h.capacity()) {
+    ann_h.resize(0);
+    ann_h.shrink_to_fit();}
+  while(ann_o.capacity()) {
     ann_o.resize(0);
     ann_o.shrink_to_fit();}
 }
@@ -66,68 +71,107 @@ ANN::~ANN() {
  * completely initialized and the input & output layers are set and can be
  * accessed.
  *
- * Testing status: Untested.
+ * Returns BOOLEAN: Currently serves as proof it has completed.
+ *
+ * Testing status: Functioning.
  */
 bool ANN::init() {
 
   input_layer_creation(m_input_size);
-  hidden_layer_creation(m_hidden_size, m_hidden_layers); //why the buffer step of setting them to local variables a, b, c and d?
+  hidden_layer_creation(m_hidden_size, m_hidden_layers);
   output_layer_creation(m_hidden_size, m_output_size, m_hidden_layers);
   return true;
 }
 
+/*
+ * input_layer_creation - This function serves to initialize the input nodes in
+ *                        the ANN.
+ *
+ * Parameters:
+ *    INT a: The size of the input layer.
+ *
+ * Assumptions: On start, this function assumes there are valid values for the
+ * size of the input layer. On finish, it is to be assumed that the input layer
+ * has been completely initialized and the input layer is set and can be
+ * accessed. At this point, there are no edges to other layers, since no other
+ * layers exist at this time;
+ *
+ * Testing status: Functioning.
+ */
 void ANN::input_layer_creation(int a) {
-  ///For each node in the input layer.
-  std::cout << "Input Layer Creation" << std::endl;
   for (int i = 0; i < a; i++) {
-    std::shared_ptr<Node*> tmp = std::make_shared<Node*>();
-    ann_i.push_back(std::move(tmp));
+    Node* tmp = new Node();
+    ann_i.push_back(tmp);
   }
 }
 
-//Error in hidden_layer_creation!!
+/*
+ * hidden_layer_creation - This function serves to initialize the hidden nodes
+ *                         in the ANN. It connects each hidden node to all the
+ *                         nodes in the previous layer.
+ *
+ * Parameters:
+ *    INT b: The size of each hidden layer.
+ *    INT d: The number of the hidden layers.
+ *
+ * Assumptions: On start, this function assumes there are valid values for the
+ * size of the layers and the number of nodes in a hidden layer. On finish, it
+ * is to be assumed that the hidden layers have been completely initialized and
+ * the edges between each previous layer are currently connected and can be
+ * traversed/accessed.
+ *
+ * Testing status: Functioning.
+ */
 void ANN::hidden_layer_creation(int b, int d) {
-  //For each hidden layers.
-  std::cout << "Hidden Layer Creation" << std::endl;
   for (int i = 0; i < d; i++) {
-    ///For each node in a hidden layer.
     for (int j = 0; j < b; j++) {
-      std::shared_ptr<Node*> tmp = std::make_shared<Node*>();
-      ann_h.push_back(std::move(tmp));
+      Node* tmp = new Node();
+      ann_h.push_back(tmp);
       if (i) {
         int l = (i - 1) * b;
-        ///For each node in a hidden layer, add the newly created node to the
-        ///vector of edges of the previous layer.
         for (int k = 0; k < b; k++) {
-          std::shared_ptr<Node*> pmt (ann_h[l+k]);
-          (*pmt)->m_edges.push_back(std::move(tmp));
-          (*pmt)->m_edgeWeight.push_back(0.5);
+          Node* pmt = ann_h[l+k];
+          (*pmt).m_edges.push_back(tmp);
+          (*pmt).m_edgeWeight.push_back(0.5);
         }
       }
       else {
-        ///For each node in the input layer, add the newly created node to the
-        ///vector of edges.
-        for (std::vector<std::shared_ptr<Node*> >::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
-          (**it)->m_edges.push_back(std::move(tmp));
-          (**it)->m_edgeWeight.push_back(0.5);
+        for (int i = 0; i < ann_i.size(); i++) {
+          ann_i[i]->m_edges.push_back(tmp);
+          ann_i[i]->m_edgeWeight.push_back(0.5);
         }
       }
     }
   }
 }
 
+/*
+ * output_layer_creation - This function serves to initialize the hidden nodes
+ *                         in the ANN. It connects each hidden node to all the
+ *                         nodes in the previous layer.
+ *
+ * Parameters:
+ *    INT b: The size of each hidden layer.
+ *    INT c: The size of the output layer.
+ *    INT d: The number of the hidden layers.
+ *
+ * Assumptions: On start, this function assumes there are valid values for the
+ * size of the layers and the number of nodes in a hidden layer. On finish, it
+ * is to be assumed that the output layers have been completely initialized and
+ * the edges between each previous layer are currently connected and can be
+ * traversed/accessed.
+ *
+ * Testing status: Functioning.
+ */
 void ANN::output_layer_creation(int b, int c, int d) {
-  std::cout << "Output Layer Creation" << std::endl;
   int l = (d*b)-b;
-  ///For each node in the output layer.
   for (int i = 0; i < c; i++) {
-    std::shared_ptr<Node*> tmp = std::make_shared<Node*>();
-    ann_o.push_back(std::move(tmp));
-    ///For each node in the last hidden layer.
+    Node* tmp = new Node();
+    ann_o.push_back(tmp);
     for (int j = 0; j < b; j++) {
-      std::shared_ptr<Node*> pmt (ann_h[l+j]);
-      (*pmt)->m_edges.push_back(std::move(tmp));
-      (*pmt)->m_edgeWeight.push_back(0.5);
+      Node * pmt = ann_h[l+j];
+      (*pmt).m_edges.push_back(tmp);
+      (*pmt).m_edgeWeight.push_back(0.5);
     }
   }
 }

@@ -7,10 +7,9 @@ int main(int argc, char const *argv[]) {
   }
   std::cout << std::endl;
 
-  std::unique_ptr<ANN> ann = std::make_unique<ANN>(test_array);
+  ANN* ann = new ANN(test_array);
 
-  if (ann) {
-    std::cout << "Test" << std::endl;
-  }
-    return 0;
+  if (ann){}
+
+  return 0;
 }

@@ -1,4 +1,4 @@
-# Makefile for captsone
+# Makefile for ANN
 #
 # If this file is in the directory with your program, you can compile your
 # program using the following command:
