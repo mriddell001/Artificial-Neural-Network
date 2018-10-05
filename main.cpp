@@ -9,7 +9,8 @@ int main(int argc, char const *argv[]) {
 
   ANN* ann = new ANN(test_array);
 
-  if (ann){}
+  //ann->print();
+  if(ann) {}
 
   return 0;
 }

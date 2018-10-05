@@ -112,7 +112,7 @@ void ANN::input_layer_creation(int a) {
  *
  * Parameters:
  *    INT b: The size of each hidden layer.
- *    INT d: The number of the hidden layers.
+ *    INT c: The number of the hidden layers.
  *
  * Assumptions: On start, this function assumes there are valid values for the
  * size of the layers and the number of nodes in a hidden layer. On finish, it
@@ -122,8 +122,8 @@ void ANN::input_layer_creation(int a) {
  *
  * Testing status: Functioning.
  */
-void ANN::hidden_layer_creation(int b, int d) {
-  for (int i = 0; i < d; i++) {
+void ANN::hidden_layer_creation(int b, int c) {
+  for (int i = 0; i < c; i++) {
     for (int j = 0; j < b; j++) {
       Node* tmp = new Node();
       ann_h.push_back(tmp);
@@ -358,4 +358,15 @@ void ANN::emergency_exit(std::string error_message) {
   //~ANN();
   std::cout << "Error located in: " << error_message << std::endl;
   exit (1);
+}
+
+void ANN::print() {
+  for (int i = 0; i < m_input_size; i++) {
+    std::cout << "Input Node[" << i << "] connections:" << std::endl;
+    for (int j = 0; j < m_hidden_size; j++) {
+      if (ann_i[i]->m_edges[j] == ann_h[j]) {
+        std::cout << "\tann_h[" << j << "] - confirmed" << std::endl;
+      }
+    }
+  }
 }
