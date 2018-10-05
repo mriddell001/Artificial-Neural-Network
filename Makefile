@@ -1,4 +1,4 @@
-# Makefile for captsone
+# Makefile for ANN
 #
 # If this file is in the directory with your program, you can compile your
 # program using the following command:
@@ -34,3 +34,6 @@ ann.o: ANN.h Node.h ANN.cpp
 
 node.o: Node.h Node.cpp
 	g++ -std=c++11 -Wall -pedantic -g -c Node.cpp
+
+clean:
+	rm -f *.o main

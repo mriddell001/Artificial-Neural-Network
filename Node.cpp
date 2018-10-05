@@ -1,3 +1,11 @@
+/*
+Filename: Node.cpp
+Contents: This file contains the main functions of control for the Node.
+Functions:
+  Node - This creates the node and sets all applicable values.
+  ~ANN - This destructor frees all memory reserved by the class Node.
+  DOUBLE gen_rand_num - This creates a random number [0,1] for the weight.
+*/
 #include "Node.h"
 
 /**
