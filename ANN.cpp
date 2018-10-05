@@ -49,7 +49,7 @@ ANN::ANN(int in[]) {
  * Testing status: Tested. 10-4-18
  */
 ANN::~ANN() {
-<<<<<<< HEAD
+//<<<<<<< HEAD
   while (ann_i.capacity()) {
     ann_i.resize(0);
     ann_i.shrink_to_fit();}
@@ -57,15 +57,15 @@ ANN::~ANN() {
 	  ann_h.resize(0);
     ann_h.shrink_to_fit();}
   while (ann_o.capacity()) {
-=======
-  while(ann_i.capacity()) {
-    ann_i.resize(0);
-    ann_i.shrink_to_fit();}
-  while(ann_h.capacity()) {
-    ann_h.resize(0);
-    ann_h.shrink_to_fit();}
-  while(ann_o.capacity()) {
->>>>>>> 2189c49575453157d3a90009a039d7d5bf5921d1
+//=======
+//  while(ann_i.capacity()) {
+//    ann_i.resize(0);
+//    ann_i.shrink_to_fit();}
+//  while(ann_h.capacity()) {                              what are these? they give me syntax errors
+//    ann_h.resize(0);
+//    ann_h.shrink_to_fit();}
+//  while(ann_o.capacity()) {
+//>>>>>>> 2189c49575453157d3a90009a039d7d5bf5921d1
     ann_o.resize(0);
     ann_o.shrink_to_fit();}
 }
