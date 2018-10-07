@@ -12,17 +12,12 @@ Functions:
 	this constructor captures the weights in the previous layer
 	and initialises the weights to the next
 */
-Node::Node(int next_layer_amount, std::vector<double> prevLayerWeight)
+Node::Node(int next_layer_amount, std::vector<Node*> prevLayer)
 {
-	m_inWeights = prevLayerWeight;
+	m_prevLayer = prevLayer;
+	m_bias = gen_rand_int();
 	for (int i = 0; i < next_layer_amount; i++)
-		m_edgeWeight.emplace_back(gen_rand_num());
-}
-
-//Default constructor
-Node::Node()
-{
-
+		m_edgeWeight.emplace_back(gen_rand_double());
 }
 
 /**
@@ -37,11 +32,19 @@ Node::~Node() {
   }
 }
 
-double Node::gen_rand_num()
+double Node::gen_rand_double()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<double> distribution(0, 1);
+	return distribution(gen);
+}
+
+int Node::gen_rand_int()
+{
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<int> distribution(0, 100);
 	return distribution(gen);
 }
 
@@ -52,7 +55,10 @@ double Node::sigmoid(double x)
 
 void Node::calc_activation()
 {
-	
+	double weight_activtion_product = 0;
+	for (int i = 0; i < m_prevLayer.size(); i++)
+		weight_activtion_product += (m_prevLayer[i]->get_activation * m_prevLayer[i]->m_edgeWeight[i]);
+	m_activation = sigmoid(weight_activtion_product - m_bias);
 }
 
 double Node::get_activation()

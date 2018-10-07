@@ -18,11 +18,12 @@ Functions:
 
 class Node {
 public:
-  Node(int next_layer_amount, std::vector<double> prevLayerWeight);
-  Node();
+  Node(int next_layer_amount, std::vector<Node*> prevLayer);
+  Node() = delete;  //deleted the default constructor, you can do nothing but use my own constructor! Mwahahahahah!
   ~Node();
 
-  double gen_rand_num();            //Returns a random value between 0 & 1.
+  double gen_rand_double();			//Returns a random value between 0 & 1.
+  int gen_rand_int();				//Returns a random value between 0 & 100.
   void set_activation(double act);  //Sets the Activation to a certain Value (to be used when setting up input layer)
   double get_activation();			//Gets the Activation
 
@@ -38,8 +39,7 @@ private:
   double m_activation;				//Activation Value
   int m_bias;						//Threshold Bias
 
-  std::vector<double> m_inWeights;		//Weights going into this neuron.
-  std::vector<double> m_inActivations;  //Activations of neurons in previous layer.
+  std::vector<Node*> m_prevLayer;
   
 };
 
