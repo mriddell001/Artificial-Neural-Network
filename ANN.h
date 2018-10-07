@@ -12,7 +12,6 @@ Functions:
 //ANN.h
 #ifndef ANN_H
 #define ANN_H
-#define e 2.71828182845904523536
 
 #include "Node.h"
 #include <iostream>
