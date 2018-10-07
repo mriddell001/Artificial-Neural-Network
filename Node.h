@@ -19,6 +19,7 @@ Functions:
 class Node {
 public:
   Node(int next_layer_amount, std::vector<Node*> prevLayer);
+  Node(int next_layer_amount);
   Node() = delete;  //deleted the default constructor, you can do nothing but use my own constructor! Mwahahahahah!
   ~Node();
 

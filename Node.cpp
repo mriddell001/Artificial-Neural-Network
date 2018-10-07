@@ -20,15 +20,34 @@ Node::Node(int next_layer_amount, std::vector<Node*> prevLayer)
 		m_edgeWeight.emplace_back(gen_rand_double());
 }
 
+/*
+	This constructor is to be used for the input layer.
+	it takes no previous layer and the activation must
+	be set manually through set_activation(double act).
+*/
+
+Node::Node(int next_layer_amount)
+{
+	m_bias = gen_rand_int();
+	for (int i = 0; i < next_layer_amount; i++)
+		m_edgeWeight.emplace_back(gen_rand_double());
+}
+
 /**
  * ~Node - This is the deconstructor for the class Node. By using shrink_to_fit,
  *         unlike erase or clear, the memory allocated is released. This process
  *         confirms data is released and sets vectors to a null pointer.
  */
 Node::~Node() {
-  while (m_edgeWeight.capacity()) {
+  while (m_edgeWeight.capacity()) 
+  {
     m_edgeWeight.resize(0);
     m_edgeWeight.shrink_to_fit();
+  }
+  while (m_prevLayer.capacity())
+  {
+	  m_prevLayer.resize(0);
+	  m_prevLayer.shrink_to_fit();
   }
 }
 

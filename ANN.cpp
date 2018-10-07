@@ -49,7 +49,6 @@ ANN::ANN(int in[]) {
  * Testing status: Tested. 10-4-18
  */
 ANN::~ANN() {
-//<<<<<<< HEAD
   while (ann_i.capacity()) {
     ann_i.resize(0);
     ann_i.shrink_to_fit();}
@@ -57,15 +56,6 @@ ANN::~ANN() {
 	  ann_h.resize(0);
     ann_h.shrink_to_fit();}
   while (ann_o.capacity()) {
-//=======
-//  while(ann_i.capacity()) {
-//    ann_i.resize(0);
-//    ann_i.shrink_to_fit();}
-//  while(ann_h.capacity()) {                              what are these? they give me syntax errors
-//    ann_h.resize(0);
-//    ann_h.shrink_to_fit();}
-//  while(ann_o.capacity()) {
-//>>>>>>> 2189c49575453157d3a90009a039d7d5bf5921d1
     ann_o.resize(0);
     ann_o.shrink_to_fit();}
 }
@@ -110,7 +100,7 @@ bool ANN::init() {
  */
 void ANN::input_layer_creation(int a) {
   for (int i = 0; i < a; i++) {
-    Node* tmp = new Node();
+    Node* tmp = new Node(m_hidden_size);
     ann_i.push_back(tmp);
   }
 }
