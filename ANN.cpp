@@ -15,8 +15,9 @@ Functions:
 
 /**
  * ANN - This function serves as the constructor for the ANN object. It sets the
- *    four basic size values: input, hidden, output, hidden layers. It calls the
- *    init() function afterwards and checks that it executed sucessfully.
+ *    four basic size values: input, hidden, output, hidden layers.
+ *	  It sets the pointers to all the layers to 0.
+ *	  It calls the init() function afterwards and checks that it executed sucessfully.
  *
  * Parameters:
  *  INT ARRAY in: This contains the four values for building the ANN.
@@ -44,21 +45,15 @@ ANN::ANN(int in[]) {
   std::cout << ((init()) ? "init() exited with no errors" : "init() failed to execute!") << std::endl;
 }
 
-/**
- * ~ANN - This function serves as the deconstructor for the ANN object. It runs
- *    a for loop itterating through each vector (input/hidden/output) and calls
- *    to delete each Node pointer.
- *
- * Assumptions: This function assumes the delete function is called successfully
- *
- * Testing status: Tested. 10-4-18
+/*
+ * kinda useless
  */
 ANN::~ANN() {}
 
 /*
- * init - This function serves to initialize the nodes in the ANN. This version
- *        is the primative version. Ultimately, this should be able to use
- *        recursion to automatically set every value.
+ * init - This function serves to initialize the layers in the ANN.
+ *        
+ *        
  *
  * Assumptions: On start, this function assumes there are valid values for the
  * size of the layers and number of layers. It also assumes each hidden layer is
@@ -66,7 +61,8 @@ ANN::~ANN() {}
  * completely initialized and the input & output layers are set and can be
  * accessed.
  *
- * Returns BOOLEAN: Currently serves as proof it has completed.
+ * Returns bool success: is false if the pointers are still nullptr, which is an
+ *						 indication that the layers did not initialize.
  *
  * Testing status: Functioning.
  */
@@ -78,7 +74,7 @@ bool ANN::init()
 	for (int i = 1; i < m_hidden_layers; i++)
 		ann_h.emplace_back(new Layer(HIDDEN_LAYER, i, ann_h[i - 1], m_input_size, m_hidden_size, m_output_size, m_hidden_layers));
 
-	ann_o = new Layer(OUTPUT_LAYER, NULL, NULL, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
+	ann_o = new Layer(OUTPUT_LAYER, 0, ann_h.back(), m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
 
 	bool success = (ann_i != nullptr && ann_o != nullptr) ? true : false;
 	for (int i = 0; i < m_hidden_layers; i++)
@@ -275,7 +271,7 @@ void ANN::print() {
   for (int i = 0; i < m_input_size; i++) {
     std::cout << "Input Node[" << i << "] connections:" << std::endl;
     for (int j = 0; j < m_hidden_size; j++) {
-      if (ann_i[i]->m_edges[j] == ann_h[j]) {
+      if (ann_i->neurons[j]->m_edges[j] == ann_h[j]->neurons[j]) {
         std::cout << "\tann_h[" << j << "] - confirmed" << std::endl;
       }
     }

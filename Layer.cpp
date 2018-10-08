@@ -6,24 +6,24 @@ Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size, size_t
 	m_index = index;
 	m_prevLayer = prevLayer;
 
-	if (m_type == INPUT_LAYER)
-	{
-		m_size = in_layer_size;
-		m_next_layer_size = hidden_layer_size;
+	if (m_type == INPUT_LAYER)													//if the layer type is an input layer then
+	{																			//set its size to the size of an input layer
+		m_size = in_layer_size;													//and the size of the next layer to the size
+		m_next_layer_size = hidden_layer_size;									//of a hidden layer
 	}
-	else if (m_type == HIDDEN_LAYER && m_index != hidden_layer_amount - 1)
-	{
-		m_size = hidden_layer_size;
-		m_next_layer_size = hidden_layer_size;
+	else if (m_type == HIDDEN_LAYER && m_index != hidden_layer_amount - 1)		//However if it's a hidden layer and it's not
+	{																			//the last one, then its size and the size of	
+		m_size = hidden_layer_size;												//the next layer are set to the size of a 
+		m_next_layer_size = hidden_layer_size;									//hidden layer
 	}
-	else if (m_type == HIDDEN_LAYER && m_index == hidden_layer_amount - 1)
-	{
-		m_size = hidden_layer_size;
+	else if (m_type == HIDDEN_LAYER && m_index == hidden_layer_amount - 1)		//But if it's the last hidden layer before the output
+	{																			//layer then its size is that of a hidden layer
+		m_size = hidden_layer_size;												//and the size of the next is that of an output layer
 		m_next_layer_size = out_layer_size;
 	}
-	else
-	{
-		m_size = out_layer_size;
+	else																		//the only case left is if it's an output layer
+	{																			//in which case its size is the size of an output
+		m_size = out_layer_size;												//layer and there is no next layer, so 0.
 		m_next_layer_size = 0;
 	}
 

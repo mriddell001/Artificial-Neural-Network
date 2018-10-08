@@ -9,23 +9,23 @@ Functions:
 #include "Node.h"
 
 /*
-	this constructor captures the weights in the previous layer
-	and initialises the weights to the next
+this constructor captures the previous layer
+and initialises the weights to the next
 */
 Node::Node(int next_layer_amount, Layer *prevLayer)
 {
 	m_prevLayer = prevLayer;
 	m_bias = gen_rand_int();
+	m_activation = calc_activation();
 	for (int i = 0; i < next_layer_amount; i++)
 		m_edgeWeight.emplace_back(gen_rand_double());
 }
 
 /*
-	This constructor is to be used for the input layer.
-	it takes no previous layer and the activation must
-	be set manually through set_activation(double act).
+This constructor is to be used for the input layer.
+it takes no previous layer and the activation must
+be set manually through set_activation(double act).
 */
-
 Node::Node(int next_layer_amount)
 {
 	m_bias = gen_rand_int();
@@ -46,6 +46,10 @@ Node::~Node() {
   }
 }
 
+/*
+Returns a random double within the interval [0, 1];
+Purpose: setting weights to the next layer.
+*/
 double Node::gen_rand_double()
 {
 	std::random_device rd;
@@ -54,6 +58,10 @@ double Node::gen_rand_double()
 	return distribution(gen);
 }
 
+/*
+Returns a random integer within the interval [0, 100];
+Purpose: setting the bias of the current neuron.
+*/
 int Node::gen_rand_int()
 {
 	std::random_device rd;
@@ -62,24 +70,33 @@ int Node::gen_rand_int()
 	return distribution(gen);
 }
 
+//Sigmoid function.
 double Node::sigmoid(double x)
 {
-	return 1 / (1 + pow(e, x));
+	return 1 / (1 + pow(e, -x));
 }
 
-void Node::calc_activation()
+/*
+This Function calculates the activation of this neuron and returns it 
+Rather than setting it straight to activation in case the need arises
+To calculate the activation again in real-time or call it from outside 
+this class.
+*/
+double Node::calc_activation()
 {
 	double weight_activtion_product = 0;
 	for (int i = 0; i < m_prevLayer->get_size(); i++)
 		weight_activtion_product += (m_prevLayer->neurons[i]->get_activation * m_prevLayer->neurons[i]->m_edgeWeight[i]);
-	m_activation = sigmoid(weight_activtion_product - m_bias);
+	return sigmoid(weight_activtion_product - m_bias);
 }
 
+//Returns the Activation.
 double Node::get_activation()
 {
 	return m_activation;
 }
 
+//Sets The Activation.
 void Node::set_activation(double act)
 {
 	//if the value given is not in range [1, 0] then don't change it;

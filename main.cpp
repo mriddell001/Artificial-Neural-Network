@@ -12,5 +12,6 @@ int main(int argc, char const *argv[]) {
   //ann->print();
   if(ann) {}
 
+  delete ann;
   return 0;
 }
