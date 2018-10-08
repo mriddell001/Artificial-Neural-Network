@@ -10,6 +10,7 @@ Functions:
 #ifndef NODE_H
 #define NODE_H
 
+#include "Layer.h"
 #include <vector>
 #include <random>
 #include <math.h>
