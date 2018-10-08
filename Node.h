@@ -12,17 +12,39 @@ Functions:
 
 #include <vector>
 #include <random>
+#include <math.h>
+#include <iostream>
+#include <string>
+#include "Layer.h"
+
+#define e 2.71828182845904523536
 
 class Node {
 public:
-  Node(){m_weight = gen_rand_num();};
+  Node(int next_layer_amount, Layer* prevLayer);
+  Node(int next_layer_amount);
+  Node() = delete;  //deleted the default constructor, you can do nothing but use my own constructors! Mwahahahahah!
   ~Node();
 
-  double gen_rand_num();            //Returns a random value between 0 & 1.
+  double gen_rand_double();			//Returns a random value between 0 & 1.
+  int gen_rand_int();				//Returns a random value between 0 & 100.
+  void set_activation(double act);  //Sets the Activation to a certain Value (to be used when setting up input layer)
+  double get_activation();			//Gets the Activation
 
+public:
   std::vector<Node*> m_edges;       //Pointers to nodes in next layer.
   std::vector<double> m_edgeWeight; //Weights of paths to nodes in next layer.
-  double m_weight;                  //Weight of node. Default: Random
+
+private:
+	double sigmoid(double x);		//Sigmoid Functoin
+	void calc_activation();			//Calculates the Activation
+
+private:
+  double m_activation;				//Activation Value
+  int m_bias;						//Threshold Bias
+
+  Layer *m_prevLayer;				//Pointer to the Previous Layer
+  
 };
 
 #endif // Node_H

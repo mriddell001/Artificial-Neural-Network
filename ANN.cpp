@@ -36,6 +36,11 @@ ANN::ANN(int in[]) {
   m_hidden_size = in[2];
   m_output_size = in[3];
 
+  ann_i = 0;
+  for(int i = 0; i < m_hidden_layers; i++)
+	ann_h[i] = 0;
+  ann_o = 0;
+
   std::cout << ((init()) ? "init() exited with no errors" : "init() failed to execute!") << std::endl;
 }
 
@@ -48,27 +53,7 @@ ANN::ANN(int in[]) {
  *
  * Testing status: Tested. 10-4-18
  */
-ANN::~ANN() {
-//<<<<<<< HEAD
-  while (ann_i.capacity()) {
-    ann_i.resize(0);
-    ann_i.shrink_to_fit();}
-  while (ann_h.capacity()) {
-	  ann_h.resize(0);
-    ann_h.shrink_to_fit();}
-  while (ann_o.capacity()) {
-//=======
-//  while(ann_i.capacity()) {
-//    ann_i.resize(0);
-//    ann_i.shrink_to_fit();}
-//  while(ann_h.capacity()) {                              what are these? they give me syntax errors
-//    ann_h.resize(0);
-//    ann_h.shrink_to_fit();}
-//  while(ann_o.capacity()) {
-//>>>>>>> 2189c49575453157d3a90009a039d7d5bf5921d1
-    ann_o.resize(0);
-    ann_o.shrink_to_fit();}
-}
+ANN::~ANN() {}
 
 /*
  * init - This function serves to initialize the nodes in the ANN. This version
@@ -85,105 +70,21 @@ ANN::~ANN() {
  *
  * Testing status: Functioning.
  */
-bool ANN::init() {
+bool ANN::init() 
+{
+	ann_i = new Layer(INPUT_LAYER, 0, NULL, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
+	
+	ann_h[0] = new Layer(HIDDEN_LAYER, 0, ann_i, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
+	for (int i = 1; i < m_hidden_layers; i++)
+		ann_h.emplace_back(new Layer(HIDDEN_LAYER, i, ann_h[i - 1], m_input_size, m_hidden_size, m_output_size, m_hidden_layers));
 
-  input_layer_creation(m_input_size);
-  hidden_layer_creation(m_hidden_size, m_hidden_layers);
-  output_layer_creation(m_hidden_size, m_output_size, m_hidden_layers);
-  return true;
-}
+	ann_o = new Layer(OUTPUT_LAYER, NULL, NULL, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
 
-/*
- * input_layer_creation - This function serves to initialize the input nodes in
- *                        the ANN.
- *
- * Parameters:
- *    INT a: The size of the input layer.
- *
- * Assumptions: On start, this function assumes there are valid values for the
- * size of the input layer. On finish, it is to be assumed that the input layer
- * has been completely initialized and the input layer is set and can be
- * accessed. At this point, there are no edges to other layers, since no other
- * layers exist at this time;
- *
- * Testing status: Functioning.
- */
-void ANN::input_layer_creation(int a) {
-  for (int i = 0; i < a; i++) {
-    Node* tmp = new Node();
-    ann_i.push_back(tmp);
-  }
-}
+	bool success = (ann_i != nullptr && ann_o != nullptr) ? true : false;
+	for (int i = 0; i < m_hidden_layers; i++)
+		success = (ann_h[i] != nullptr) ? true : false;
 
-/*
- * hidden_layer_creation - This function serves to initialize the hidden nodes
- *                         in the ANN. It connects each hidden node to all the
- *                         nodes in the previous layer.
- *
- * Parameters:
- *    INT b: The size of each hidden layer.
- *    INT c: The number of the hidden layers.
- *
- * Assumptions: On start, this function assumes there are valid values for the
- * size of the layers and the number of nodes in a hidden layer. On finish, it
- * is to be assumed that the hidden layers have been completely initialized and
- * the edges between each previous layer are currently connected and can be
- * traversed/accessed.
- *
- * Testing status: Functioning.
- */
-void ANN::hidden_layer_creation(int b, int c) {
-  for (int i = 0; i < c; i++) {
-    for (int j = 0; j < b; j++) {
-      Node* tmp = new Node();
-      ann_h.push_back(tmp);
-      if (i) {
-        int l = (i - 1) * b;
-        for (int k = 0; k < b; k++) {
-          Node* pmt = ann_h[l+k];
-          (*pmt).m_edges.push_back(tmp);
-          (*pmt).m_edgeWeight.push_back(0.5);
-        }
-      }
-      else {
-        for (int i = 0; i < ann_i.size(); i++) {
-          ann_i[i]->m_edges.push_back(tmp);
-          ann_i[i]->m_edgeWeight.push_back(0.5);
-        }
-      }
-    }
-  }
-}
-
-/*
- * output_layer_creation - This function serves to initialize the hidden nodes
- *                         in the ANN. It connects each hidden node to all the
- *                         nodes in the previous layer.
- *
- * Parameters:
- *    INT b: The size of each hidden layer.
- *    INT c: The size of the output layer.
- *    INT d: The number of the hidden layers.
- *
- * Assumptions: On start, this function assumes there are valid values for the
- * size of the layers and the number of nodes in a hidden layer. On finish, it
- * is to be assumed that the output layers have been completely initialized and
- * the edges between each previous layer are currently connected and can be
- * traversed/accessed.
- *
- * Testing status: Functioning.
- */
-void ANN::output_layer_creation(int b, int c, int d) {
-  int l = (d*b)-b;
-  for (int i = 0; i < c; i++) {
-    Node* tmp = new Node();
-    ann_o.push_back(tmp);
-    for (int j = 0; j < b; j++) {
-      Node * pmt = ann_h[l+j];
-      (*pmt).m_edges.push_back(tmp);
-      (*pmt).m_edgeWeight.push_back(0.5);
-    }
-  }
+	return success;
 }
 
 /**
