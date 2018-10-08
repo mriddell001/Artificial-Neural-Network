@@ -70,8 +70,8 @@ double Node::sigmoid(double x)
 void Node::calc_activation()
 {
 	double weight_activtion_product = 0;
-	for (int i = 0; i < m_prevLayer.get_size(); i++)
-		weight_activtion_product += (m_prevLayer.neurons[i]->get_activation * m_prevLayer.neurons[i]->m_edgeWeight[i]);
+	for (int i = 0; i < m_prevLayer->get_size(); i++)
+		weight_activtion_product += (m_prevLayer->neurons[i]->get_activation * m_prevLayer->neurons[i]->m_edgeWeight[i]);
 	m_activation = sigmoid(weight_activtion_product - m_bias);
 }
 

@@ -21,7 +21,7 @@ Functions:
 
 class Node {
 public:
-  Node(int next_layer_amount, *Layer prevLayer);
+  Node(int next_layer_amount, Layer* prevLayer);
   Node(int next_layer_amount);
   Node() = delete;  //deleted the default constructor, you can do nothing but use my own constructors! Mwahahahahah!
   ~Node();
