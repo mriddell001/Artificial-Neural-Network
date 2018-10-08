@@ -13,7 +13,7 @@ Functions:
 #ifndef ANN_H
 #define ANN_H
 
-#include "Node.h"
+#include "Layer.h"
 
 class ANN {
 public:
@@ -44,9 +44,9 @@ private:
   void emergency_exit(std::string error_message);
   void save_state(std::ostream &outstream);
 
-  std::vector<Node*> ann_i;   //Vector of input nodes.
-  std::vector<Node*> ann_h;   //Vector of hidden nodes.
-  std::vector<Node*> ann_o;   //Vector of output nodes.
+  Layer* ann_i;				   //Input Layer.
+  std::vector<Layer*> ann_h;   //Vector of hidden Layers.
+  Layer* ann_o;				   //Output Layer.
   int m_input_size;
   int m_hidden_layers;
   int m_hidden_size;

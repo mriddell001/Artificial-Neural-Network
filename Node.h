@@ -43,7 +43,7 @@ private:
   double m_activation;				//Activation Value
   int m_bias;						//Threshold Bias
 
-  Layer *m_prevLayer;
+  Layer *m_prevLayer;				//Pointer to the Previous Layer
   
 };
 
