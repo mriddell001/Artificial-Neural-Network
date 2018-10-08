@@ -12,7 +12,7 @@ Functions:
 	this constructor captures the weights in the previous layer
 	and initialises the weights to the next
 */
-Node::Node(int next_layer_amount, std::vector<Node*> prevLayer)
+Node::Node(int next_layer_amount, Layer *prevLayer)
 {
 	m_prevLayer = prevLayer;
 	m_bias = gen_rand_int();
@@ -44,11 +44,6 @@ Node::~Node() {
     m_edgeWeight.resize(0);
     m_edgeWeight.shrink_to_fit();
   }
-  while (m_prevLayer.capacity())
-  {
-	  m_prevLayer.resize(0);
-	  m_prevLayer.shrink_to_fit();
-  }
 }
 
 double Node::gen_rand_double()
@@ -75,8 +70,8 @@ double Node::sigmoid(double x)
 void Node::calc_activation()
 {
 	double weight_activtion_product = 0;
-	for (int i = 0; i < m_prevLayer.size(); i++)
-		weight_activtion_product += (m_prevLayer[i]->get_activation * m_prevLayer[i]->m_edgeWeight[i]);
+	for (int i = 0; i < m_prevLayer.get_size(); i++)
+		weight_activtion_product += (m_prevLayer.neurons[i]->get_activation * m_prevLayer.neurons[i]->m_edgeWeight[i]);
 	m_activation = sigmoid(weight_activtion_product - m_bias);
 }
 

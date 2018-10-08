@@ -13,14 +13,17 @@ Functions:
 #include <vector>
 #include <random>
 #include <math.h>
+#include <iostream>
+#include <string>
+#include "Layer.h"
 
 #define e 2.71828182845904523536
 
 class Node {
 public:
-  Node(int next_layer_amount, std::vector<Node*> prevLayer);
+  Node(int next_layer_amount, *Layer prevLayer);
   Node(int next_layer_amount);
-  Node() = delete;  //deleted the default constructor, you can do nothing but use my own constructor! Mwahahahahah!
+  Node() = delete;  //deleted the default constructor, you can do nothing but use my own constructors! Mwahahahahah!
   ~Node();
 
   double gen_rand_double();			//Returns a random value between 0 & 1.
@@ -40,7 +43,7 @@ private:
   double m_activation;				//Activation Value
   int m_bias;						//Threshold Bias
 
-  std::vector<Node*> m_prevLayer;
+  Layer *m_prevLayer;
   
 };
 

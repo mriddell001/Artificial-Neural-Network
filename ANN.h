@@ -14,8 +14,6 @@ Functions:
 #define ANN_H
 
 #include "Node.h"
-#include <iostream>
-#include <string>
 
 class ANN {
 public:
