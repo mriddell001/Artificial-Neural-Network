@@ -1,7 +1,7 @@
 #include "ANN.h"
 
 int main(int argc, char const *argv[]) {
-  int test_array[4] = {2, 1, 1, 1};
+  int test_array[4] = {4, 2, 2, 2};
   for (size_t i = 0; i < 4; i++) {
     std::cout << test_array[i] << " ";
   }
@@ -9,9 +9,11 @@ int main(int argc, char const *argv[]) {
 
   ANN* ann = new ANN(test_array);
 
-  //ann->print();
-  if(ann) {}
+  ann->print();
 
+  if(ann) {}
   delete ann;
+
+  std::cin.get();
   return 0;
 }

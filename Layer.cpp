@@ -1,3 +1,4 @@
+#include "Node.h"
 #include "Layer.h"
 
 Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size, size_t hidden_layer_size, size_t out_layer_size, size_t hidden_layer_amount)
@@ -32,9 +33,9 @@ Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size, size_t
 
 bool Layer::init()
 {
-	for (int i = 0; i < m_size; i++)
+	for (size_t i = 0; i < m_size; i++)
 	{
-		Node* tmp = (m_type == INPUT_LAYER) ? new Node(m_next_layer_size) : new Node(m_next_layer_size, m_prevLayer);
+		Node* tmp = (m_type == INPUT_LAYER) ? (new Node(m_next_layer_size, i)) : (new Node(m_next_layer_size, i, m_prevLayer));
 		neurons.emplace_back(tmp);
 	}
 

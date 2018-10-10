@@ -39,7 +39,7 @@ ANN::ANN(int in[]) {
 
   ann_i = 0;
   for(int i = 0; i < m_hidden_layers; i++)
-	ann_h[i] = 0;
+	ann_h.emplace_back(nullptr);
   ann_o = 0;
 
   std::cout << ((init()) ? "init() exited with no errors" : "init() failed to execute!") << std::endl;
@@ -72,7 +72,7 @@ bool ANN::init()
 	
 	ann_h[0] = new Layer(HIDDEN_LAYER, 0, ann_i, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
 	for (int i = 1; i < m_hidden_layers; i++)
-		ann_h.emplace_back(new Layer(HIDDEN_LAYER, i, ann_h[i - 1], m_input_size, m_hidden_size, m_output_size, m_hidden_layers));
+		ann_h[i] = (new Layer(HIDDEN_LAYER, i, ann_h[i - 1], m_input_size, m_hidden_size, m_output_size, m_hidden_layers));
 
 	ann_o = new Layer(OUTPUT_LAYER, 0, ann_h.back(), m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
 
@@ -267,13 +267,7 @@ void ANN::emergency_exit(std::string error_message) {
   exit (1);
 }
 
-void ANN::print() {
-  for (int i = 0; i < m_input_size; i++) {
-    std::cout << "Input Node[" << i << "] connections:" << std::endl;
-    for (int j = 0; j < m_hidden_size; j++) {
-      if (ann_i->neurons[j]->m_edges[j] == ann_h[j]->neurons[j]) {
-        std::cout << "\tann_h[" << j << "] - confirmed" << std::endl;
-      }
-    }
-  }
+void ANN::print() 
+{
+
 }

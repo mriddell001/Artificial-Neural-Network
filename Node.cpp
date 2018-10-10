@@ -7,14 +7,15 @@ Functions:
   DOUBLE gen_rand_num - This creates a random number [0,1] for the weight.
 */
 #include "Node.h"
-
+#include "Layer.h"
 /*
 this constructor captures the previous layer
 and initialises the weights to the next
 */
-Node::Node(int next_layer_amount, Layer *prevLayer)
+Node::Node(int next_layer_amount, int index, Layer *prevLayer)
 {
 	m_prevLayer = prevLayer;
+	m_index = index;
 	m_bias = gen_rand_int();
 	m_activation = calc_activation();
 	for (int i = 0; i < next_layer_amount; i++)
@@ -26,9 +27,11 @@ This constructor is to be used for the input layer.
 it takes no previous layer and the activation must
 be set manually through set_activation(double act).
 */
-Node::Node(int next_layer_amount)
+Node::Node(int next_layer_amount, int index)
 {
+	m_index = index;
 	m_bias = gen_rand_int();
+	m_activation = 0;
 	for (int i = 0; i < next_layer_amount; i++)
 		m_edgeWeight.emplace_back(gen_rand_double());
 }
@@ -66,7 +69,7 @@ int Node::gen_rand_int()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_real_distribution<int> distribution(0, 100);
+	std::uniform_int_distribution<int> distribution(0, 100);
 	return distribution(gen);
 }
 
@@ -85,8 +88,8 @@ this class.
 double Node::calc_activation()
 {
 	double weight_activtion_product = 0;
-	for (int i = 0; i < m_prevLayer->get_size(); i++)
-		weight_activtion_product += (m_prevLayer->neurons[i]->get_activation * m_prevLayer->neurons[i]->m_edgeWeight[i]);
+	for (size_t i = 0; i < (m_prevLayer->neurons.size()); i++)
+		weight_activtion_product += (m_prevLayer->neurons[i]->get_activation() * m_prevLayer->neurons[i]->m_edgeWeight[m_index]);
 	return sigmoid(weight_activtion_product - m_bias);
 }
 

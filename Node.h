@@ -10,7 +10,6 @@ Functions:
 #ifndef NODE_H
 #define NODE_H
 
-#include "Layer.h"
 #include <vector>
 #include <random>
 #include <math.h>
@@ -19,10 +18,12 @@ Functions:
 
 #define e 2.71828182845904523536
 
+class Layer;
+
 class Node {
 public:
-  Node(int next_layer_amount, Layer* prevLayer);
-  Node(int next_layer_amount);
+  Node(int next_layer_amount, int index, Layer* prevLayer);
+  Node(int next_layer_amount, int index);
   Node() = delete;  //deleted the default constructor, you can do nothing but use my own constructors! Mwahahahahah!
   ~Node();
 
@@ -42,6 +43,7 @@ private:
 private:
   double m_activation;				//Activation Value
   int m_bias;						//Threshold Bias
+  int m_index;
 
   Layer* m_prevLayer;				//Pointer to the Previous Layer
   

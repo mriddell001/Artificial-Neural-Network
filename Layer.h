@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LAYER_H
+#define LAYER_H
 
 #include "Node.h"
 
@@ -29,3 +30,5 @@ private:
 	size_t m_next_layer_size;	//Size of the next layer (0 if it's the output layer).
 	Layer* m_prevLayer;			//Pointer to the next layer (NULL if it's the output layer).
 };
+
+#endif // Layer_H

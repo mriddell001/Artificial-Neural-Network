@@ -37,10 +37,6 @@ private:
   bool back_hidden_to_hidden(double err);
   bool back_hidden_to_input(double err);
 
-  void input_layer_creation(int a);
-  void hidden_layer_creation(int b, int d);
-  void output_layer_creation(int b, int c, int d);
-
   void emergency_exit(std::string error_message);
   void save_state(std::ostream &outstream);
 
