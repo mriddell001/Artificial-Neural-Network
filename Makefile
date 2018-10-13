@@ -23,7 +23,7 @@
 #    -g           ==> keep additional information to aid in debugging
 #    -o           ==> specify the output filename
 #    -c           ==> compile only (create a .o file)
-main: ANN.o main.o Node.o Layer.o
+main: main.o ANN.o Node.o Layer.o
 	g++ -std=c++11 -Wall -pedantic -g -o main main.o ANN.o Layer.o Node.o
 
 main.o: ANN.h main.cpp
