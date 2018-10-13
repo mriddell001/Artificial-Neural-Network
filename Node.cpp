@@ -17,7 +17,7 @@ Node::Node(int next_layer_amount, int index, Layer *prevLayer)
 	m_prevLayer = prevLayer;
 	m_index = index;
 	m_bias = gen_rand_int();
-	m_activation = calc_activation();
+	m_activation = 0;
 	for (int i = 0; i < next_layer_amount; i++)
 		m_edgeWeight.emplace_back(gen_rand_double());
 }
