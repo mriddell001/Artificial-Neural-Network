@@ -43,13 +43,9 @@ ANN::ANN(int in[]) {
 	ann_h.emplace_back(nullptr);
   ann_o = 0;
 
-  std::cout << ((init()) ? "init() exited with no errors" : "init() failed to execute!") << std::endl;
+  std::cout << ((init()) ? "init() exited with no errors"
+                         : "init() failed to execute!") << std::endl;
 }
-
-/*
- * kinda useless
- */
-ANN::~ANN() {}
 
 /*
  * init - This function serves to initialize the layers in the ANN.
@@ -69,13 +65,17 @@ ANN::~ANN() {}
  */
 bool ANN::init()
 {
-	ann_i = new Layer(INPUT_LAYER, 0, NULL, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
+	ann_i = new Layer(INPUT_LAYER, 0, NULL, m_input_size, m_hidden_size,
+                    m_output_size, m_hidden_layers);
 
-	ann_h[0] = new Layer(HIDDEN_LAYER, 0, ann_i, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
+	ann_h[0] = new Layer(HIDDEN_LAYER, 0, ann_i, m_input_size, m_hidden_size,
+                       m_output_size, m_hidden_layers);
 	for (int i = 1; i < m_hidden_layers; i++)
-		ann_h[i] = (new Layer(HIDDEN_LAYER, i, ann_h[i - 1], m_input_size, m_hidden_size, m_output_size, m_hidden_layers));
+		ann_h[i] = (new Layer(HIDDEN_LAYER, i, ann_h[i - 1], m_input_size,
+                m_hidden_size, m_output_size, m_hidden_layers));
 
-	ann_o = new Layer(OUTPUT_LAYER, 0, ann_h.back(), m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
+	ann_o = new Layer(OUTPUT_LAYER, 0, ann_h.back(), m_input_size, m_hidden_size,
+                    m_output_size, m_hidden_layers);
 
 	bool success = (ann_i != nullptr && ann_o != nullptr) ? true : false;
 	for (int i = 0; i < m_hidden_layers; i++)
@@ -263,7 +263,6 @@ bool ANN::back_hidden_to_input(double err) {
 }
 
 void ANN::emergency_exit(std::string error_message) {
-  //~ANN();
   std::cout << "Error located in: " << error_message << std::endl;
   exit (1);
 }
