@@ -10,6 +10,7 @@ Functions:
 */
 #include "ANN.h"
 #include "Node.h"
+#include "Layer.h"
 #include <utility>
 #include <vector>
 
@@ -52,8 +53,8 @@ ANN::~ANN() {}
 
 /*
  * init - This function serves to initialize the layers in the ANN.
- *        
- *        
+ *
+ *
  *
  * Assumptions: On start, this function assumes there are valid values for the
  * size of the layers and number of layers. It also assumes each hidden layer is
@@ -66,10 +67,10 @@ ANN::~ANN() {}
  *
  * Testing status: Functioning.
  */
-bool ANN::init() 
+bool ANN::init()
 {
 	ann_i = new Layer(INPUT_LAYER, 0, NULL, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
-	
+
 	ann_h[0] = new Layer(HIDDEN_LAYER, 0, ann_i, m_input_size, m_hidden_size, m_output_size, m_hidden_layers);
 	for (int i = 1; i < m_hidden_layers; i++)
 		ann_h[i] = (new Layer(HIDDEN_LAYER, i, ann_h[i - 1], m_input_size, m_hidden_size, m_output_size, m_hidden_layers));
@@ -267,7 +268,7 @@ void ANN::emergency_exit(std::string error_message) {
   exit (1);
 }
 
-void ANN::print() 
+void ANN::print()
 {
 
 }

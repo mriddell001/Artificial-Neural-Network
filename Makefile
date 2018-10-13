@@ -23,17 +23,19 @@
 #    -g           ==> keep additional information to aid in debugging
 #    -o           ==> specify the output filename
 #    -c           ==> compile only (create a .o file)
-main: ANN.o main.o Node.o
-	g++ -std=c++11 -Wall -pedantic -g -o main main.o ANN.o Node.o
+main: ANN.o main.o Node.o Layer.o
+	g++ -std=c++14 -Wall -pedantic -g -o main main.o ANN.o Layer.o Node.o
 
 main.o: ANN.h main.cpp
-	g++ -std=c++11 -Wall -pedantic -g -c main.cpp
+	g++ -std=c++14 -Wall -pedantic -g -c main.cpp
 
-ann.o: ANN.h Node.h ANN.cpp
-	g++ -std=c++11 -Wall -pedantic -g -c ANN.cpp
+ANN.o: ANN.h Layer.h Node.h ANN.cpp
+	g++ -std=c++14 -Wall -pedantic -g -c ANN.cpp
 
-node.o: Node.h Node.cpp
-	g++ -std=c++11 -Wall -pedantic -g -c Node.cpp
+Node.o: Node.h Layer.h Node.cpp
+	g++ -std=c++14 -Wall -pedantic -g -c Node.cpp
 
+Layer.o: Layer.h Node.h Layer.cpp
+	g++ -std=c++14 -Wall -pedantic -g -c Layer.cpp
 clean:
 	rm -f *.o main
