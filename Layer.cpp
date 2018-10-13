@@ -1,7 +1,9 @@
 #include "Node.h"
 #include "Layer.h"
 
-Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size, size_t hidden_layer_size, size_t out_layer_size, size_t hidden_layer_amount)
+Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size,
+	 					 size_t hidden_layer_size, size_t out_layer_size,
+						 size_t hidden_layer_amount)
 {
 	m_type = type;
 	m_index = index;
@@ -13,8 +15,8 @@ Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size, size_t
 		m_next_layer_size = hidden_layer_size;									//of a hidden layer
 	}
 	else if (m_type == HIDDEN_LAYER && m_index != hidden_layer_amount - 1)		//However if it's a hidden layer and it's not
-	{																			//the last one, then its size and the size of	
-		m_size = hidden_layer_size;												//the next layer are set to the size of a 
+	{																			//the last one, then its size and the size of
+		m_size = hidden_layer_size;												//the next layer are set to the size of a
 		m_next_layer_size = hidden_layer_size;									//hidden layer
 	}
 	else if (m_type == HIDDEN_LAYER && m_index == hidden_layer_amount - 1)		//But if it's the last hidden layer before the output
@@ -28,14 +30,16 @@ Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size, size_t
 		m_next_layer_size = 0;
 	}
 
-	std::cout << ((init()) ? "Layer Initialized Successfully" : "There Was A Problem Initializing Layer") << std::endl;
+	std::cout << ((init()) ? "Layer Initialized Successfully"
+												 : "There Was A Problem Initializing Layer") << std::endl;
 }
 
 bool Layer::init()
 {
 	for (size_t i = 0; i < m_size; i++)
 	{
-		Node* tmp = (m_type == INPUT_LAYER) ? (new Node(m_next_layer_size, i)) : (new Node(m_next_layer_size, i, m_prevLayer));
+		Node* tmp = (m_type == INPUT_LAYER) ? (new Node(m_next_layer_size, i))
+																				: (new Node(m_next_layer_size, i, m_prevLayer));
 		neurons.emplace_back(tmp);
 	}
 
