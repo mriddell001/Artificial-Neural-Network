@@ -42,7 +42,7 @@ Node::Node(int next_layer_amount, int index)
  *         confirms data is released and sets vectors to a null pointer.
  */
 Node::~Node() {
-  while (m_edgeWeight.capacity()) 
+  while (m_edgeWeight.capacity())
   {
     m_edgeWeight.resize(0);
     m_edgeWeight.shrink_to_fit();
@@ -80,9 +80,9 @@ double Node::sigmoid(double x)
 }
 
 /*
-This Function calculates the activation of this neuron and returns it 
+This Function calculates the activation of this neuron and returns it
 Rather than setting it straight to activation in case the need arises
-To calculate the activation again in real-time or call it from outside 
+To calculate the activation again in real-time or call it from outside
 this class.
 */
 double Node::calc_activation()
@@ -97,6 +97,17 @@ double Node::calc_activation()
 double Node::get_activation()
 {
 	return m_activation;
+}
+
+//Returns the Bias.
+double Node::get_bias()
+{
+	return m_bias;
+}
+
+std::vector<double> Node::get_edgeWeights()
+{
+	return m_edgeWeight;
 }
 
 //Sets The Activation.

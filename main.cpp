@@ -9,11 +9,9 @@ int main(int argc, char const *argv[]) {
 
   ANN* ann = new ANN(test_array);
 
-  ann->print();
+  if(ann) {
+    ann->print();
+  }
 
-  if(ann) {}
-  delete ann;
-
-  std::cin.get();
   return 0;
 }

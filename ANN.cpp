@@ -269,5 +269,37 @@ void ANN::emergency_exit(std::string error_message) {
 
 void ANN::print()
 {
-
+  std::cout << "Input Layer:\n";
+  for (size_t i = 0; i < m_input_size; i++) {
+    std::cout << "Node " << i << " - Bias: " << ann_i->neurons[i]->get_bias() << "\n";
+    std::vector<double> weights = ann_i->neurons[i]->get_edgeWeights();
+    for (size_t j = 0; j < weights.size(); j++) {
+      if(j>0&&j%4==0) {
+        std::cout << std::endl;
+      }
+      std::cout << j << ": " << weights[j] << "\t";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << "\nHidden Layers:\n" << std::endl;
+  for (size_t i = 0; i < m_hidden_layers; i++) {
+    for (size_t j = 0; j < m_hidden_size; j++) {
+      std::cout << "Layer " << i << " Node " << j;
+      std::cout << " - Bias: " << ann_h[i]->neurons[j]->get_bias() << '\n';
+      std::vector<double> weights = ann_h[i]->neurons[j]->get_edgeWeights();
+      for (size_t k = 0; k < weights.size(); k++) {
+        if(j>0&&j%4==0) {
+          std::cout << std::endl;
+        }
+        std::cout << j << ": " << weights[j] << "\t";
+      }
+      std::cout << '\n';
+    }
+    std::cout << '\n';
+  }
+  std::cout << "\nOutput Layer:\n";
+  for (size_t i = 0; i < m_output_size; i++) {
+    std::cout << "Node " << i << " - Bias: " << ann_o->neurons[i]->get_bias() << "\n";
+  }
+  std::cout << '\n';
 }
