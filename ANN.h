@@ -18,7 +18,8 @@ Functions:
 class ANN {
 public:
   ANN(int in[]);
-  void auto_refine(std::istream &instream, std::ostream &outstream);
+  //void testing_cycle(std::istream &instream, std::ostream &outstream);
+  void testing_cycle(std::istream &instream);
   void print();
 
 private:

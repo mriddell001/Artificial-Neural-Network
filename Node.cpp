@@ -90,7 +90,7 @@ double Node::calc_activation()
 	double weight_activtion_product = 0;
 	for (size_t i = 0; i < (m_prevLayer->neurons.size()); i++)
 		weight_activtion_product += (m_prevLayer->neurons[i]->get_activation() * m_prevLayer->neurons[i]->m_edgeWeight[m_index]);
-	return sigmoid(weight_activtion_product - m_bias);
+	return sigmoid(weight_activtion_product + m_bias);
 }
 
 //Returns the Activation.
@@ -113,6 +113,10 @@ std::vector<double> Node::get_edgeWeights()
 //Sets The Activation.
 void Node::set_activation(double act)
 {
+ /*Activation value in the input layer may or may not be a value between [0,1].
+	*We can only guarentee the test cases are of type double.
+	*/
+	m_activation = act;
 	//if the value given is not in range [1, 0] then don't change it;
-	m_activation = ((act > 1) || (act < 0)) ? m_activation : act;
+	//m_activation = ((act > 1) || (act < 0)) ? m_activation : act;
 }

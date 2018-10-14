@@ -36,7 +36,7 @@ public:
 
 public:
   std::vector<double> get_edgeWeights();
-  std::vector<Node*> m_edges;       //Pointers to nodes in next layer.
+  //std::vector<Node*> m_edges;       //Pointers to nodes in next layer.
   std::vector<double> m_edgeWeight; //Weights of paths to nodes in next layer.
 
 private:
@@ -44,7 +44,7 @@ private:
 
 private:
   double m_activation;				//Activation Value
-  int m_bias;						//Threshold Bias
+  int m_bias;						      //Threshold Bias
   int m_index;
 
   Layer* m_prevLayer;				//Pointer to the Previous Layer

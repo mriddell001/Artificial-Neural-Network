@@ -2,6 +2,7 @@
 #define LAYER_H
 
 #include "Node.h"
+#include <vector>
 
 #define INPUT_LAYER 1
 #define HIDDEN_LAYER 2
@@ -15,6 +16,7 @@ public:
 		 		size_t hidden_layer_size, size_t out_layer_size,
 				size_t hidden_layer_amount);
 	~Layer();
+	bool set_input(std::vector<double> inputs);
 
 	size_t get_size();
 	unsigned int get_type();
@@ -30,7 +32,7 @@ private:
 	int m_index;							//If hidden layer then hidden layer index.
 	size_t m_size;						//Size of the current layer.
 	size_t m_next_layer_size;	//Size of the next layer.
-	Layer* m_prevLayer;				//Pointer to the next layer.
+	Layer* m_prevLayer;				//Pointer to the previous layer.
 };
 
 #endif // Layer_H

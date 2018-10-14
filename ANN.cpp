@@ -11,6 +11,8 @@ Functions:
 #include "ANN.h"
 #include "Node.h"
 #include "Layer.h"
+#include <fstream>
+#include <queue>
 #include <utility>
 #include <vector>
 
@@ -30,7 +32,7 @@ Functions:
  * Assumptions: This function assumes the int array argument contains four valid
  *    integer values to be set.
  *
- * Testing status: Tested. 10-4-18
+ * Testing status: Tested. 10-14-18
  */
 ANN::ANN(int in[]) {
   m_input_size = in[0];
@@ -61,10 +63,9 @@ ANN::ANN(int in[]) {
  * Returns bool success: is false if the pointers are still nullptr, which is an
  *						 indication that the layers did not initialize.
  *
- * Testing status: Functioning.
+ * Testing status: Tested 10/14/18.
  */
-bool ANN::init()
-{
+bool ANN::init(){
 	ann_i = new Layer(INPUT_LAYER, 0, NULL, m_input_size, m_hidden_size,
                     m_output_size, m_hidden_layers);
 
@@ -81,28 +82,33 @@ bool ANN::init()
 	for (int i = 0; i < m_hidden_layers; i++)
 		success = (ann_h[i] != nullptr) ? true : false;
 
+
 	return success;
 }
 
 /**
- * auto_refine - This function serves as an automatic refining of the ANN to
- *    reach a certain level of error consistantly. It randomly uses true
- *
- *
+ * testing_cycle - This function serves as an automatic refining of the ANN to
+ *    reach a certain level of error consistantly. The testing cycle has a few
+ *    different steps involved. First you construct a pool of test cases. Next
+ *    select a test case and prime the input layer. After that, perform the
+ *    forward propagation. Record the sum of squares (elucidian distance)
+ *    between the current output and the target output. Finally, perform back
+ *    propagation to change the edge weights and bias.
  *
  * Assumptions:
  *
  * Testing status: Untested.
  */
-void ANN::auto_refine(std::istream &instream, std::ostream &outstream) {
-  /*
-  priority_queue<std::pair<double, std::string> > tests;
+//void ANN::testing_cycle(std::istream &instream, std::ostream &outstream) {
+void ANN::testing_cycle(std::istream &instream) {
+  std::priority_queue<std::pair<double, std::string> > tests;
   std::string t, error_loc;
   double error_target;
   instream >> error_target;
   while(instream >> t) {
     tests.push(std::make_pair(1.0,t));
   }
+
   while(tests.size()) {
     std::pair<double, std::string> test = tests.top();
     if (test.first <= error_target) {
@@ -111,30 +117,26 @@ void ANN::auto_refine(std::istream &instream, std::ostream &outstream) {
     else {
       tests.pop(); //Remove top record.
       std::ifstream test_stream (test.second, std::ifstream::in); //Open file.
-      bool primed = prime_input(test_stream); //Prime input.
-      if(primed) {
-        //Run test.
-        bool tested = run_test();
-        if (tested) {
-          //Measure distance.
-          double e_dist = elucidian_distance(test_stream);
-          if (e_dist > error_target) {
-            //Backtracking.
-            bool updated = backtracking(e_dist);
-            //Update Error
-            //Push
-          }
-        }
-      }
-      else {
+      print();
+      if(prime_input(test_stream)) {
+        print();
+      } //Prime input.
+
+      /*run_test(); //Run test.
+      double e_dist = elucidian_distance(test_stream);
+      if (e_dist > error_target) {
+        backtracking(e_dist);//Backtracking.
+        test.first = e_dist;//Update Error
+        tests.push(test);//Push
+      }*/
+      /*else {
         while(tests.size()) {tests.pop();}
         error_loc = "Priming";
         emergency_exit(error_loc);
-      }
+      }*/
+      while(tests.size()) {tests.pop();}
     }
-
   }
-  */
 }
 
 /**
@@ -147,15 +149,13 @@ void ANN::auto_refine(std::istream &instream, std::ostream &outstream) {
  * Testing status: Untested.
  */
 bool ANN::prime_input(std::istream &stream) {
-  /*
+  std::vector<double> inputs;
   double tmp;
-  for (std::vector<Node*>::iterator it = ann_i.begin() ; it != ann_i.end(); ++it) {
+  for (size_t i = 0; i < m_input_size; i++) {
     stream >> tmp;
-    (*it)->m_weight = tmp;
+    inputs.push_back(tmp);
   }
-  return true;
-  */
-  return true;
+  return ann_i->set_input(inputs);
 }
 
 bool ANN::run_test() {
@@ -271,7 +271,7 @@ void ANN::print()
 {
   std::cout << "Input Layer:\n";
   for (size_t i = 0; i < m_input_size; i++) {
-    std::cout << "Node " << i << " - Bias: " << ann_i->neurons[i]->get_bias() << "\n";
+    std::cout << "Node " << i << " - Activation: " << ann_i->neurons[i]->get_activation() << "\n";
     std::vector<double> weights = ann_i->neurons[i]->get_edgeWeights();
     for (size_t j = 0; j < weights.size(); j++) {
       if(j>0&&j%4==0) {
@@ -285,7 +285,7 @@ void ANN::print()
   for (size_t i = 0; i < m_hidden_layers; i++) {
     for (size_t j = 0; j < m_hidden_size; j++) {
       std::cout << "Layer " << i << " Node " << j;
-      std::cout << " - Bias: " << ann_h[i]->neurons[j]->get_bias() << '\n';
+      std::cout << " - Activation: " << ann_h[i]->neurons[j]->get_activation() << '\n';
       std::vector<double> weights = ann_h[i]->neurons[j]->get_edgeWeights();
       for (size_t k = 0; k < weights.size(); k++) {
         if(j>0&&j%4==0) {
@@ -299,7 +299,7 @@ void ANN::print()
   }
   std::cout << "\nOutput Layer:\n";
   for (size_t i = 0; i < m_output_size; i++) {
-    std::cout << "Node " << i << " - Bias: " << ann_o->neurons[i]->get_bias() << "\n";
+    std::cout << "Node " << i << " - Activation: " << ann_o->neurons[i]->get_activation() << "\n";
   }
   std::cout << '\n';
 }

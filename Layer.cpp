@@ -1,5 +1,6 @@
 #include "Node.h"
 #include "Layer.h"
+#include <vector>
 
 Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size,
 	 					 size_t hidden_layer_size, size_t out_layer_size,
@@ -62,5 +63,17 @@ Layer::~Layer()
 	{
 		neurons.resize(0);
 		neurons.shrink_to_fit();
+	}
+}
+
+bool Layer::set_input(std::vector<double> inputs) {
+	if (get_type()==1) {
+		for (size_t i = 0; i < m_size; i++) {
+			neurons[i]->set_activation(inputs[i]);
+		}
+		return true;
+	}
+	else {
+		return false;
 	}
 }
