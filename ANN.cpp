@@ -122,8 +122,9 @@ void ANN::testing_cycle(std::istream &instream) {
         print();
       } //Prime input.
 
-      /*run_test(); //Run test.
-      double e_dist = elucidian_distance(test_stream);
+      run_test(); //Run test.
+      print();
+      /*double e_dist = elucidian_distance(test_stream);
       if (e_dist > error_target) {
         backtracking(e_dist);//Backtracking.
         test.first = e_dist;//Update Error
@@ -159,21 +160,14 @@ bool ANN::prime_input(std::istream &stream) {
 }
 
 bool ANN::run_test() {
-  /*
-  bool passed = input_to_hidden();
-  if (passed) {
-    passed = hidden_to_hidden();
-    if (passed) {
-      passed = hidden_to_output();
-      if (passed) {
-        return true;
-      }
-      emergency_exit("Hidden to Output");
+  for (size_t i = 0; i < ann_h.size(); i++) {
+    for (size_t j = 0; j < ann_h[i]->neurons.size(); j++) {
+      ann_h[i]->neurons[j]->set_activation(ann_h[i]->neurons[j]->calc_activation());
     }
-    emergency_exit("Hidden to Hidden");
   }
-  emergency_exit("Input to Hidden");
-  */
+  for (size_t i = 0; i < ann_o->neurons.size(); i++) {
+    ann_o->neurons[i]->set_activation(ann_o->neurons[i]->calc_activation());
+  }
   return true;
 }
 
@@ -301,5 +295,5 @@ void ANN::print()
   for (size_t i = 0; i < m_output_size; i++) {
     std::cout << "Node " << i << " - Activation: " << ann_o->neurons[i]->get_activation() << "\n";
   }
-  std::cout << '\n';
+  std::cout << "\n";
 }
