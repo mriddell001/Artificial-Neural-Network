@@ -73,7 +73,9 @@ int Node::gen_rand_int()
 	return distribution(gen);
 }
 
-//Sigmoid function.
+/*Sigmoid function.
+σ(Σ(Ai * Wij) + Bj)
+*/
 double Node::sigmoid(double x)
 {
 	return 1 / (1 + pow(e, -x));
@@ -84,10 +86,12 @@ This Function calculates the activation of this neuron and returns it
 Rather than setting it straight to activation in case the need arises
 To calculate the activation again in real-time or call it from outside
 this class.
+
+Σ(Ai * Wij) + Bj
 */
 double Node::calc_activation()
 {
-	double weight_activtion_product = 0;
+	double weight_activtion_product = 0.0;
 	for (size_t i = 0; i < (m_prevLayer->neurons.size()); i++)
 		weight_activtion_product += (m_prevLayer->neurons[i]->get_activation() * m_prevLayer->neurons[i]->m_edgeWeight[m_index]);
 	return sigmoid(weight_activtion_product + m_bias);
