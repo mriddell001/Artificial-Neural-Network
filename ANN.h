@@ -38,7 +38,8 @@ private:
   bool back_hidden_to_input(double err);
 
   void emergency_exit(std::string error_message);
-  void save_state(std::ostream &outstream);
+  void save_state(std::string file_path_name);
+  void load_state(std::string file_path_name);
 
   Layer* ann_i;				   //Input Layer.
   std::vector<Layer*> ann_h;   //Vector of hidden Layers.

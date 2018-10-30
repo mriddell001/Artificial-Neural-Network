@@ -40,10 +40,10 @@ ANN::ANN(int in[]) {
   m_hidden_size = in[2];
   m_output_size = in[3];
 
-  ann_i = 0;
+  ann_i = nullptr;
   for(int i = 0; i < m_hidden_layers; i++)
 	ann_h.emplace_back(nullptr);
-  ann_o = 0;
+  ann_o = nullptr;
 
   std::cout << ((init()) ? "init() exited with no errors"
                          : "init() failed to execute!") << std::endl;
@@ -78,9 +78,9 @@ bool ANN::init(){
 	ann_o = new Layer(OUTPUT_LAYER, 0, ann_h.back(), m_input_size, m_hidden_size,
                     m_output_size, m_hidden_layers);
 
-	bool success = (ann_i != nullptr && ann_o != nullptr) ? true : false;
+	bool success = (ann_i != nullptr || ann_o != nullptr) ? true : false;
 	for (int i = 0; i < m_hidden_layers; i++)
-		success = (ann_h[i] != nullptr) ? true : false;
+		success = (ann_h[i] != nullptr) ? success : false;
 
 
 	return success;
@@ -237,6 +237,92 @@ double ANN::elucidian_distance(std::istream &stream) {
   return error;
   */
   return 0.0;
+}
+
+void ANN::save_state(std::string file_path_name)
+{
+	std::fstream save_file;
+	save_file.open(file_path_name, std::ios::out);
+	if (!save_file.is_open()) std::cout << "Failed to Open/Create save file \n";
+
+	//Saving Input Layer State
+	for (int i = 0; i < m_input_size; i++)
+	{
+		save_file << ann_i->neurons[i]->get_activation() << std::endl;
+		for (int j = 0; j < ann_i->neurons[i]->m_edgeWeight.size(); j++)
+			save_file << ann_i->neurons[i]->m_edgeWeight[j];
+	}
+
+	//Saving Hidden Layers States
+	for (int i = 0; i < m_hidden_layers; i++)
+	{
+		for (int j = 0; j < m_hidden_size; j++)
+		{
+			save_file << ann_h[i]->neurons[j]->get_activation();
+			for (int k = 0; k < ann_h[i]->neurons[j]->m_edgeWeight.size(); k++)
+				save_file << ann_h[i]->neurons[j]->m_edgeWeight[k];
+		}
+	}
+
+	//Saving Output Layer State
+	for (int i = 0; i < m_input_size; i++)
+	{
+		save_file << ann_o->neurons[i]->get_activation() << std::endl;
+		for (int j = 0; j < ann_o->neurons[i]->m_edgeWeight.size(); j++)
+			save_file << ann_o->neurons[i]->m_edgeWeight[j];
+	}
+
+	save_file.close();
+}
+
+void ANN::load_state(std::string file_path_name)
+{
+	std::string str;
+
+	std::fstream save_file;
+	save_file.open(file_path_name, std::ios::in);
+	if (!save_file.is_open()) std::cout << "Failed to Open save file \n";
+
+	//Loading Input Layer State
+	for (int i = 0; i < m_input_size; i++)
+	{
+		save_file >> str;
+		ann_i->neurons[i]->set_activation(std::stod(str));
+		for (int j = 0; j < ann_i->neurons[i]->m_edgeWeight.size(); j++)
+		{
+			save_file >> str;
+			ann_i->neurons[i]->m_edgeWeight[j] = std::stod(str);
+		}
+	}
+
+	//Loading Hidden Layers States
+	for (int i = 0; i < m_hidden_layers; i++)
+	{
+		for (int j = 0; j < m_hidden_size; j++)
+		{
+			save_file >> str;
+			ann_h[i]->neurons[j]->set_activation(std::stod(str));
+			for (int k = 0; k < ann_h[i]->neurons[j]->m_edgeWeight.size(); k++)
+			{
+				save_file >> str;
+				ann_h[i]->neurons[j]->m_edgeWeight[k] = std::stod(str);
+			}
+		}
+	}
+
+	//Loading Output Layer State
+	for (int i = 0; i < m_input_size; i++)
+	{
+		save_file << str;
+		ann_o->neurons[i]->set_activation(std::stod(str));
+		for (int j = 0; j < ann_o->neurons[i]->m_edgeWeight.size(); j++)
+		{
+			save_file << str;
+			ann_o->neurons[i]->m_edgeWeight[j] = std::stod(str);
+		}
+	}
+
+	save_file.close();
 }
 
 bool ANN::backpropagation(double err) {
