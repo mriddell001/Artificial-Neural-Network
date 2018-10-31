@@ -15,6 +15,7 @@ Functions:
 #include <math.h>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #define e 2.71828182845904523536
 

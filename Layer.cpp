@@ -1,6 +1,5 @@
 #include "Node.h"
 #include "Layer.h"
-#include <vector>
 
 Layer::Layer(int type, int index, Layer* prevLayer, size_t in_layer_size,
 	 					 size_t hidden_layer_size, size_t out_layer_size,

@@ -69,7 +69,7 @@ int Node::gen_rand_int()
 {
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> distribution(0, 100);
+	std::uniform_int_distribution<int> distribution(-5, 5);
 	return distribution(gen);
 }
 
@@ -78,7 +78,7 @@ int Node::gen_rand_int()
 */
 double Node::sigmoid(double x)
 {
-	return 1 / (1 + pow(e, -x));
+	return 1.0 / (1.0 + std::pow(e, -x));
 }
 
 /*

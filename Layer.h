@@ -2,7 +2,6 @@
 #define LAYER_H
 
 #include "Node.h"
-#include <vector>
 
 #define INPUT_LAYER 1
 #define HIDDEN_LAYER 2

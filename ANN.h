@@ -18,16 +18,22 @@ Functions:
 class ANN {
 public:
   ANN(int in[]);
-  //void testing_cycle(std::istream &instream, std::ostream &outstream);
+
+  bool prime_input(std::istream &stream);
+  bool prime_input(const std::vector<double> &vector);
+
+  bool run_test();
   void testing_cycle(std::istream &instream);
+
+  void save_state(std::string file_path_name);
+  void load_state(std::string file_path_name);
+
   void print();
 
 private:
   bool init();
-  bool prime_input(std::istream &stream);
   double elucidian_distance(std::istream &stream);
 
-  bool run_test();
   bool input_to_hidden();
   bool hidden_to_hidden();
   bool hidden_to_output();
@@ -38,8 +44,6 @@ private:
   bool back_hidden_to_input(double err);
 
   void emergency_exit(std::string error_message);
-  void save_state(std::string file_path_name);
-  void load_state(std::string file_path_name);
 
   Layer* ann_i;				   //Input Layer.
   std::vector<Layer*> ann_h;   //Vector of hidden Layers.
