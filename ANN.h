@@ -1,4 +1,4 @@
-/* 
+/*
 Filename: ANN.h
 Contents: This file contains the header for the ANN.
 Functions:
@@ -32,13 +32,9 @@ public:
 
 private:
   bool init();
-  double elucidian_distance(std::istream &stream);
+  std::pair<double, std::vector<double>> elucidian_distance(std::istream &stream);
 
-  bool input_to_hidden();
-  bool hidden_to_hidden();
-  bool hidden_to_output();
-
-  bool backpropagation(double err);
+  bool backpropagation(std::vector<double> e_diffs);
   bool back_output_to_hidden(double err);
   bool back_hidden_to_hidden(double err);
   bool back_hidden_to_input(double err);

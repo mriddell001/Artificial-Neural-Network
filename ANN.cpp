@@ -12,6 +12,7 @@ Functions:
 #include "Node.h"
 #include "Layer.h"
 #include <fstream>
+#include <math.h>
 #include <queue>
 #include <utility>
 #include <vector>
@@ -111,6 +112,7 @@ void ANN::testing_cycle(std::istream &instream) {
 
   while(tests.size()) {
     std::pair<double, std::string> test = tests.top();
+    std::pair<double, std::vector<double>> e_dist;
     if (test.first <= error_target) {
       tests.pop();
     }
@@ -129,12 +131,16 @@ void ANN::testing_cycle(std::istream &instream) {
       std::cout << "******************************\n";
       std::cout << "Printing Tested configuration:\n";
       print();
-      /*double e_dist = elucidian_distance(test_stream);
-      if (e_dist > error_target) {
-        backtracking(e_dist);//Backtracking.
-        test.first = e_dist;//Update Error
+      e_dist = elucidian_distance(test_stream);
+      std::cout << "******************************\n";
+      std::cout << "Printing Elucidian Distance:\n" << e_dist.first << '\n';
+      if (e_dist.first > error_target) {
+        test_stream.close();
+        test_stream.open(test.second, std::ifstream::in);
+        backpropagation(e_dist.second);//Backtracking.
+        test.first = e_dist.first;//Update Error
         tests.push(test);//Push
-      }*/
+      }
       /*else {
         while(tests.size()) {tests.pop();}
         error_loc = "Priming";
@@ -164,8 +170,7 @@ bool ANN::prime_input(std::istream &stream) {
   return ann_i->set_input(inputs);
 }
 
-bool ANN::prime_input(const std::vector<double> &vector)
-{
+bool ANN::prime_input(const std::vector<double> &vector) {
 	return ann_i->set_input(vector);
 }
 
@@ -181,76 +186,25 @@ bool ANN::run_test() {
   return true;
 }
 
-bool ANN::input_to_hidden() {
-  /*
-  for (int i = 0; i < m_hidden_size; i++) {
-    double sums;
-    for (int j = 0; j < ann_i.size(); j++) {
-      sums += ann_i[j].m_edgeWeight[i] * ann_i[j].m_weight;
-    }
-    sums += ann_h[i].m_weight;
-    double sigmoid = 1.0 / (1.0 + pow(e, (-sums)));
-    ann_h[i].m_weight = sigmoid;
-  }
-  */
-  return true;
-}
-
-bool ANN::hidden_to_hidden() {
-  /*
-  int l = m_hidden_layers, s = m_hidden_size;
-  for (int i = 1; i < l; i++) {
-    for (int j = 0; j < s; j++) {
-      double sums;
-      for (int k = 0; k < s; k++) {
-        sums += ann_h[(i-1)*s + k].m_edgeWeight[j] * ann_h[(i-1)*s + k].m_weight;
-      }
-      sums += ann_h[i*s + j].m_weight;
-      double sigmoid = 1.0 / (1.0 + pow(e, (-sums)));
-      ann_h[i*s + j].m_weight = sigmoid;
-    }
-  }
-  */
-  return true;
-}
-
-bool ANN::hidden_to_output() {
-  /*
-  int l = m_hidden_layers, s = m_hidden_size, o = m_output_size;
-  for (int i = 0; i < o; i++) {
-    double sums;
-    for (int j = 0; j < s; j++) {
-      sums += ann_h[(l-1)*s+j].m_edgeWeight[i] * ann_h[(l-1)*s+j].m_weight;
-    }
-    sums += ann_o[i].m_weight;
-    double sigmoid = 1.0 / (1.0 + pow(e, (-sums)));
-    ann_o[i].m_weight = sigmoid;
-  }
-  */
-  return true;
-}
-
-double ANN::elucidian_distance(std::istream &stream) {
-  /*
-  double sum, tmp;
+std::pair<double, std::vector<double>> ANN::elucidian_distance(std::istream &stream) {
+  double sum=0.0, tmp=0.0;
   std::vector<double> diffs;
-  for (std::vector<Node*>::iterator it = ann_o.begin() ; it != ann_o.end(); ++it) {
+  std::pair<double, std::vector<double>> r;
+  for (size_t i = 0; i < m_output_size; i++) {
     stream >> tmp;
-    double diff = tmp - (*it)->m_weight;
-    diffs.push_back(diff*diff);
+    double diff = tmp - ann_o->neurons[i]->get_activation();
+    diffs.push_back(diff);
   }
 
   for (int i = 0; i < diffs.size(); i++) {
-    sum += diffs;
+    sum += pow(diffs[i],2.0);
   }
-  double error = sqrt(sum);
-  return error;
-  */
-  return 0.0;
+  r.first = sqrt(sum);
+  r.second = diffs;
+  return r;
 }
 
-void ANN::save_state(std::string file_path_name)
-{
+void ANN::save_state(std::string file_path_name) {
 	std::fstream save_file;
 	save_file.open(file_path_name.c_str(), std::ios::out);
 	if (!save_file.is_open()) std::cout << "Failed to Open/Create save file \n";
@@ -281,8 +235,7 @@ void ANN::save_state(std::string file_path_name)
 	save_file.close();
 }
 
-void ANN::load_state(std::string file_path_name)
-{
+void ANN::load_state(std::string file_path_name) {
 	std::string str;
 
 	std::fstream save_file;
@@ -326,7 +279,7 @@ void ANN::load_state(std::string file_path_name)
 	save_file.close();
 }
 
-bool ANN::backpropagation(double err) {
+bool ANN::backpropagation(std::vector<double> e_diffs) {
 
   return true;
 }
