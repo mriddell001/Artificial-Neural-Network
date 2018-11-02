@@ -117,12 +117,17 @@ void ANN::testing_cycle(std::istream &instream) {
     else {
       tests.pop(); //Remove top record.
       std::ifstream test_stream (test.second, std::ifstream::in); //Open file.
+      std::cout << "Printing Initial configuration:\n";
       print();
       if(prime_input(test_stream)) {
+        std::cout << "******************************\n";
+        std::cout << "\nPrinting Primed configuration:\n";
         print();
       } //Prime input.
 
       run_test(); //Run test.
+      std::cout << "******************************\n";
+      std::cout << "Printing Tested configuration:\n";
       print();
       /*double e_dist = elucidian_distance(test_stream);
       if (e_dist > error_target) {
