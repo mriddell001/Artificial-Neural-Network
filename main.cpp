@@ -23,9 +23,8 @@ int main(int argc, char const *argv[]) {
     ann->run_test();
     ann->save_state("save_file_2.txt");
 
-    ann->load_state("save_file_2.txt");
-    ann->run_test();
-    ann->save_state("save_file_3.txt");
+    ann->load_state("save_file_1.txt");
+	ann->save_state("save_file_3.txt");
 
     delete ann;
   }

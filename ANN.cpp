@@ -157,7 +157,7 @@ void ANN::testing_cycle(std::istream &instream) {
 bool ANN::prime_input(std::istream &stream) {
   std::vector<double> inputs;
   double tmp;
-  for (size_t i = 0; i < m_input_size; i++) {
+  for (int i = 0; i < m_input_size; i++) {
     stream >> tmp;
     inputs.push_back(tmp);
   }
@@ -256,14 +256,14 @@ void ANN::save_state(std::string file_path_name)
 	if (!save_file.is_open()) std::cout << "Failed to Open/Create save file \n";
 
   //Save input_size,hidden_layer_size,hidden_size,output_size
-	for(int i = 0; i < (sizeof(tmpIn)/sizeof(*tmpIn)); i++)
+	for(int i = 0; i < 4; i++)
 		save_file << tmpIn[i] << std::endl;
 
 	//Saving Input Layer State
 	for (int i = 0; i < m_input_size; i++)
 	{
 		save_file << ann_i->neurons[i]->get_activation() << std::endl;
-		for (int j = 0; j < ann_i->neurons[i]->m_edgeWeight.size(); j++)
+		for (size_t j = 0; j < ann_i->neurons[i]->m_edgeWeight.size(); j++)
 			save_file << ann_i->neurons[i]->m_edgeWeight[j] << std::endl;
 	}
 
@@ -273,7 +273,7 @@ void ANN::save_state(std::string file_path_name)
 		for (int j = 0; j < m_hidden_size; j++)
 		{
 			save_file << ann_h[i]->neurons[j]->get_activation() << std::endl;
-			for (int k = 0; k < ann_h[i]->neurons[j]->m_edgeWeight.size(); k++)
+			for (size_t k = 0; k < ann_h[i]->neurons[j]->m_edgeWeight.size(); k++)
 				save_file << ann_h[i]->neurons[j]->m_edgeWeight[k] << std::endl;
 		}
 	}
@@ -294,7 +294,7 @@ void ANN::load_state(std::string file_path_name)
 	if (!save_file.is_open()) std::cout << "Failed to Open save file \n";
 
   //Loads input_size,hidden_layer_size,hidden_size,output_size
-  for(int i = 0; i < (sizeof(tmpIn)/sizeof(*tmpIn)); i++){
+  for(int i = 0; i < 4; i++){
 		std::getline(save_file, str);
 		tmpIn[i] = std::stoi(str);
 	}
@@ -309,7 +309,7 @@ void ANN::load_state(std::string file_path_name)
 	{
 		std::getline(save_file, str);
 		ann_i->neurons[i]->set_activation(std::stod(str));
-		for (int j = 0; j < ann_i->neurons[i]->m_edgeWeight.size(); j++)
+		for (size_t j = 0; j < ann_i->neurons[i]->m_edgeWeight.size(); j++)
 		{
 			std::getline(save_file, str);
 			ann_i->neurons[i]->m_edgeWeight[j] = std::stod(str);
@@ -323,7 +323,7 @@ void ANN::load_state(std::string file_path_name)
 		{
 			std::getline(save_file, str);
 			ann_h[i]->neurons[j]->set_activation(std::stod(str));
-			for (int k = 0; k < ann_h[i]->neurons[j]->m_edgeWeight.size(); k++)
+			for (size_t k = 0; k < ann_h[i]->neurons[j]->m_edgeWeight.size(); k++)
 			{
 				std::getline(save_file, str);
 				ann_h[i]->neurons[j]->m_edgeWeight[k] = std::stod(str);
@@ -366,7 +366,7 @@ void ANN::emergency_exit(std::string error_message) {
 void ANN::print()
 {
   std::cout << "Input Layer:\n";
-  for (size_t i = 0; i < m_input_size; i++) {
+  for (int i = 0; i < m_input_size; i++) {
     std::cout << "Node " << i << " - Activation: " << ann_i->neurons[i]->get_activation() << "\n";
     std::vector<double> weights = ann_i->neurons[i]->get_edgeWeights();
     for (size_t j = 0; j < weights.size(); j++) {
@@ -378,8 +378,8 @@ void ANN::print()
     std::cout << std::endl;
   }
   std::cout << "\nHidden Layers:\n" << std::endl;
-  for (size_t i = 0; i < m_hidden_layers; i++) {
-    for (size_t j = 0; j < m_hidden_size; j++) {
+  for (int i = 0; i < m_hidden_layers; i++) {
+    for (int j = 0; j < m_hidden_size; j++) {
       std::cout << "Layer " << i << " Node " << j;
       std::cout << " - Activation: " << ann_h[i]->neurons[j]->get_activation() << '\n';
       std::vector<double> weights = ann_h[i]->neurons[j]->get_edgeWeights();
@@ -394,7 +394,7 @@ void ANN::print()
     std::cout << '\n';
   }
   std::cout << "\nOutput Layer:\n";
-  for (size_t i = 0; i < m_output_size; i++) {
+  for (int i = 0; i < m_output_size; i++) {
     std::cout << "Node " << i << " - Activation: " << ann_o->neurons[i]->get_activation() << "\n";
   }
   std::cout << "\n";
