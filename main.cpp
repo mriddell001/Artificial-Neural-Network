@@ -2,7 +2,7 @@
 #include <fstream>
 
 int main(int argc, char const *argv[]) {
-  bool testing_save = false; //Set to true for testing save/load.
+  bool testing_save = true; //Set to true for testing save/load.
 
   if (testing_save) {
     int test_array[4] = {4, 5, 5, 4};
@@ -23,7 +23,8 @@ int main(int argc, char const *argv[]) {
     ann->run_test();
     ann->save_state("save_file_2.txt");
 
-    ann->load_state("save_file_1.txt");
+    ann->load_state("save_file_2.txt");
+    ann->run_test();
     ann->save_state("save_file_3.txt");
 
     delete ann;

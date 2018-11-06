@@ -1,4 +1,4 @@
-/* 
+/*
 Filename: ANN.h
 Contents: This file contains the header for the ANN.
 Functions:
@@ -18,7 +18,7 @@ Functions:
 class ANN {
 public:
   ANN(int in[]);
-
+  int tmpIn[4];
   bool prime_input(std::istream &stream);
   bool prime_input(const std::vector<double> &vector);
 
