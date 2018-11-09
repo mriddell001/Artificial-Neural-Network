@@ -5,7 +5,7 @@ int main(int argc, char const *argv[]) {
   bool testing_save = true; //Set to true for testing save/load.
 
   if (testing_save) {
-    int test_array[4] = {4, 5, 5, 4};
+    int test_array[4] = {4, 6, 6, 4};
     for (size_t i = 0; i < 4; i++) {
       std::cout << test_array[i] << " ";
     }
@@ -18,12 +18,14 @@ int main(int argc, char const *argv[]) {
     ann->prime_input(inputs_1);
     ann->run_test();
     ann->save_state("save_file_1.txt");
-
+	
     ann->prime_input(inputs_2);
     ann->run_test();
-    ann->save_state("save_file_2.txt");
-
-    ann->load_state("save_file_1.txt");
+	//commented to test if old files load
+    //ann->save_state("save_file_2.txt");
+	
+	ann->save_state("save_file_3.txt");
+    ann->load_state("save_file_2.txt");
 	ann->save_state("save_file_3.txt");
 
     delete ann;

@@ -190,24 +190,22 @@ std::pair<double, std::vector<double>> ANN::elucidian_distance(std::istream &str
   double sum=0.0, tmp=0.0;
   std::vector<double> diffs;
   std::pair<double, std::vector<double>> r;
-  for (size_t i = 0; i < m_output_size; i++) {
+  for (int i = 0; i < m_output_size; i++) {
     stream >> tmp;
     double diff = tmp - ann_o->neurons[i]->get_activation();
     diffs.push_back(diff);
   }
 
-  for (int i = 0; i < diffs.size(); i++) {
+  for (size_t i = 0; i < diffs.size(); i++) {
     sum += pow(diffs[i],2.0);
   }
   r.first = sqrt(sum);
   r.second = diffs;
   return r;
 }
-
+/* Saves the configuration of the ANN to a file */
 void ANN::save_state(std::string file_path_name) {
-	std::fstream save_file;
-	save_file.open(file_path_name.c_str(), std::ios::out);
-	if (!save_file.is_open()) std::cout << "Failed to Open/Create save file \n";
+	std::fstream save_file = loadFile(file_path_name, std::ios::out);
 
   //Save input_size,hidden_layer_size,hidden_size,output_size
 	for(int i = 0; i < 4; i++)
@@ -239,23 +237,24 @@ void ANN::save_state(std::string file_path_name) {
 	save_file.close();
 }
 
+/* Loads the configuration of the ANN from a file */
 void ANN::load_state(std::string file_path_name) {
 	std::string str;
+	std::fstream save_file = loadFile(file_path_name, std::ios::in);
 
-	std::fstream save_file;
-	save_file.open(file_path_name.c_str(), std::ios::in);
-	if (!save_file.is_open()) std::cout << "Failed to Open save file \n";
+	//Loads input_size,hidden_layer_size,hidden_size,output_size
+	for(int i = 0; i < 4; i++){
+			std::getline(save_file, str);
+			tmpIn[i] = std::stoi(str);
+		}
 
-  //Loads input_size,hidden_layer_size,hidden_size,output_size
-  for(int i = 0; i < 4; i++){
-		std::getline(save_file, str);
-		tmpIn[i] = std::stoi(str);
-	}
-
-  m_input_size = tmpIn[0];
-  m_hidden_layers = tmpIn[1];
-  m_hidden_size = tmpIn[2];
-  m_output_size = tmpIn[3];
+	m_input_size = tmpIn[0];
+	m_hidden_layers = tmpIn[1];
+	m_hidden_size = tmpIn[2];
+	m_output_size = tmpIn[3];
+  
+	std::cout << ((init()) ? "init() exited with no errors"
+							: "init() failed to execute!") << std::endl;
 
 	//Loading Input Layer State
 	for (int i = 0; i < m_input_size; i++)
@@ -294,6 +293,13 @@ void ANN::load_state(std::string file_path_name) {
 	save_file.close();
 }
 
+std::fstream ANN::loadFile(std::string file_path_name, std::ios::openmode mode) {
+	
+	std::fstream file;
+	file.open(file_path_name.c_str(), mode);
+	if (!file.is_open()) std::cout << "Failed to Open/Create save file \n";
+	return file;
+}
 bool ANN::backpropagation(std::vector<double> e_diffs) {
 
   return true;

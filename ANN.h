@@ -27,7 +27,7 @@ public:
 
   void save_state(std::string file_path_name);
   void load_state(std::string file_path_name);
-
+  std::fstream loadFile(std::string file_path_name, std::ios::openmode mode);
   void print();
 
 private:
